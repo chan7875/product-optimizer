@@ -2,30 +2,49 @@ import pandas as pd
 import argparse
 import os
 import sys
+import re
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Calculate production schedule from Excel.')
     parser.add_argument('--file', type=str, required=True, help='Path to the schedule Excel file.')
     parser.add_argument('--date', type=str, required=True, help='Target date (YYYY-MM-DD) to read quantities from.')
+    parser.add_argument('--setup-times', type=str, default="", help='Setup times mapping (e.g. S01:40,S02:13)')
     return parser.parse_args()
 
-def calculate_time_for_row(row, target_qty):
+def calculate_time_for_row(row, target_qty, setup_time_map, line_col_idx):
     """
-    Calculates production time for a single row based on the formula:
-    Time = (Layer_TT * Array * Qty) / 60
-    Returns a list of dicts: [{'Item_Code': ..., 'Layer': ..., 'Prod_Time': ..., 'Qty': ...}]
+    Calculates production time based on formula and line-specific setup time.
     """
-    item_code = str(row.iloc[0]).strip() # Col A: Item Code
-    layer_info = str(row.iloc[2]).strip() # Col C: Layer (B, T, B/T, T/B)
-    tt_info = str(row.iloc[5]).strip()    # Col F: T/T (e.g. "42", "42,55")
-    array_val = row.iloc[8]               # Col I: Array
+    item_code = str(row.iloc[0]).strip() # Col A
+    layer_info = str(row.iloc[2]).strip() # Col C
+    tt_info = str(row.iloc[5]).strip()    # Col F
+    array_val = row.iloc[8]               # Col I
+    
+    # Get Line Info
+    line_val = "Unknown"
+    if line_col_idx is not None and line_col_idx < len(row):
+        val = str(row.iloc[line_col_idx]).strip()
+        if val and val != 'nan':
+            line_val = val
+            
+    # Determine Setup Time
+    # Default 13
+    setup_time = 13
+    if line_val in setup_time_map:
+        setup_time = setup_time_map[line_val]
     
     # Validation
     if pd.isna(item_code) or item_code == 'nan' or not item_code:
         return []
     
     try:
-        array_count = float(array_val)
+        # Extract number from string like "(적층) 1"
+        s_val = str(array_val)
+        match = re.search(r"(\d+(\.\d+)?)", s_val)
+        if match:
+            array_count = float(match.group(1))
+        else:
+            return []
     except (ValueError, TypeError):
         return []
         
@@ -36,71 +55,78 @@ def calculate_time_for_row(row, target_qty):
     except (ValueError, TypeError):
         return []
 
-    # Parse Layer and TT
-    # Example: Layer="B/T", TT="42,55" -> Bottom=42, Top=55
-    # Example: Layer="B", TT="42" -> Bottom=42
-    
+    # Parse Layer
     layers = []
     if '/' in layer_info:
         layers = [L.strip().upper() for L in layer_info.split('/')]
     else:
         layers = [layer_info.strip().upper()]
         
-    # Standardize Layer Names
     std_layers = []
     for L in layers:
         if L == 'B': std_layers.append('Bottom')
         elif L == 'T': std_layers.append('Top')
-        else: std_layers.append(L) # Should probably be Error or keep as is? User said B or T.
+        else: std_layers.append(L)
         
-    tts = []
-    # TT might be comma separated or just space separated? User said "42,55"
-    # User said "F 열에는 T/T 정보가 있는데... 셀에 42,55 가 있으면"
+    # Parse T/T (Cycle Time)
+    # Rule: "Left, Right" -> Left=Bottom, Right=Top
+    b_cycle = 0.0
+    t_cycle = 0.0
+    
+    # Clean and split
+    tt_clean = tt_info.replace(' ', '')
+    
     if ',' in tt_info:
-        tts = [float(t.strip()) for t in tt_info.split(',')]
-    else:
+        parts = tt_info.split(',')
         try:
-            tts = [float(tt_info)]
-        except ValueError:
-            pass # Handle empty or invalid TT
+            b_cycle = float(parts[0].strip())
+        except: b_cycle = 0.0
+        
+        if len(parts) > 1:
+            try:
+                t_cycle = float(parts[1].strip())
+            except: t_cycle = 0.0
+        else:
+            t_cycle = b_cycle # Should not happen if ',' exists but just in case
             
-    if not tts:
+    else:
+        # Single value case
+        try:
+            val = float(tt_info.strip())
+            b_cycle = val
+            t_cycle = val
+        except:
+            pass # 0.0
+            
+    if b_cycle == 0 and t_cycle == 0:
         return []
 
     results = []
     
-    # Mapping Logic
-    # Case 1: Simple 1:1 match
-    if len(std_layers) == len(tts):
-        for i, layer_name in enumerate(std_layers):
-            cycle_time = tts[i]
-            # Formula: (TT * Array * Qty) / 60
-            # Result is in minutes. Add 13 minutes setup time per layer.
-            prod_time_mins = ((cycle_time * array_count * qty) / 60) + 13
-            
-            results.append({
-                'Item_Code': item_code,
-                'Layer': layer_name,
-                'Qty': int(qty),
-                'Cycle_Time': cycle_time,
-                'Prod_Time': round(prod_time_mins, 2)
-            })
-            
-    # Case 2: Mismatch (Robustness)
-    # If 2 layers but 1 TT? Assume same TT? Or Error?
-    # Taking safe approach: if 1 TT provided but 2 layers, apply to both?
-    # Or strict mapping. Let's try strict mapping first, but fallback to 1st TT if mismatch.
-    elif len(tts) == 1 and len(std_layers) > 1:
-         for layer_name in std_layers:
-            cycle_time = tts[0]
-            prod_time_mins = ((cycle_time * array_count * qty) / 60) + 13
-            results.append({
-                'Item_Code': item_code,
-                'Layer': layer_name,
-                'Qty': int(qty),
-                'Cycle_Time': cycle_time,
-                'Prod_Time': round(prod_time_mins, 2)
-            })
+    def add_result(l_name, c_time):
+        if c_time <= 0: return # Skip if no time
+        
+        # Formula: (TT * Array * Qty) / 60 + SetupTime
+        prod_time_mins = ((c_time * array_count * qty) / 60) + setup_time
+        results.append({
+            'Item_Code': item_code,
+            'Layer': l_name,
+            'Qty': int(qty),
+            'Cycle_Time': c_time,
+            'Line': line_val,
+            'Setup_Time': setup_time,
+            'Prod_Time': round(prod_time_mins, 2)
+        })
+
+    for layer_name in std_layers:
+        if layer_name == 'Bottom':
+            add_result(layer_name, b_cycle)
+        elif layer_name == 'Top':
+            add_result(layer_name, t_cycle)
+        else:
+            # Unknown layer? Use B cycle or T?
+            # Fallback to B (first val)
+            add_result(layer_name, b_cycle)
             
     return results
 
@@ -150,6 +176,29 @@ def main():
         
     print(f"Found target date column: {target_col}")
 
+    # Parse Setup Times
+    setup_time_map = {}
+    if args.setup_times:
+        try:
+            # Format: S01:40,S02:13
+            pairs = args.setup_times.split(',')
+            for p in pairs:
+                k, v = p.split(':')
+                setup_time_map[k.strip()] = float(v.strip())
+            print(f"Setup Times: {setup_time_map}")
+        except Exception as e:
+            print(f"Error parsing setup times: {e}")
+
+    # Find Line Column
+    line_col_idx = None
+    for i, col in enumerate(df.columns):
+        c_str = str(col).lower()
+        if "line" in c_str or "생산라인" in c_str:
+            line_col_idx = i
+            break
+            
+    print(f"Found Line Column Index: {line_col_idx} (Name: {df.columns[line_col_idx] if line_col_idx is not None else 'None'})")
+
     all_production_items = []
     
     # Iterate rows
@@ -164,26 +213,38 @@ def main():
             continue
             
         # Parse and Calculate
-        items = calculate_time_for_row(row, qty_val)
+        items = calculate_time_for_row(row, qty_val, setup_time_map, line_col_idx)
         all_production_items.extend(items)
         
     # Detailed Output
-    print("\n" + "=" * 80)
-    print(f"{'Item Code':<20} | {'Layer':<8} | {'Qty':<8} | {'T/T':<8} | {'Time (min)':<10}")
-    print("-" * 80)
+    print("\n" + "=" * 100)
+    print(f"{'Line':<6} | {'Item Code':<20} | {'Layer':<8} | {'Qty':<8} | {'T/T':<8} | {'Setup':<6} | {'Time (min)':<10}")
+    print("-" * 100)
     for item in all_production_items:
-        print(f"{item['Item_Code']:<20} | {item['Layer']:<8} | {item['Qty']:<8} | {item['Cycle_Time']:<8} | {item['Prod_Time']:.2f}")
-    print("=" * 80 + "\n")
+        print(f"{item['Line']:<6} | {item['Item_Code']:<20} | {item['Layer']:<8} | {item['Qty']:<8} | {item['Cycle_Time']:<8} | {item['Setup_Time']:<6} | {item['Prod_Time']:.2f}")
+    print("=" * 100 + "\n")
 
     # Summary Output
     total_time_mins = sum(item['Prod_Time'] for item in all_production_items)
     operation_rate = (total_time_mins / 480) * 100
+    
+    # Group by Line
+    line_totals = {}
+    for item in all_production_items:
+        ln = item['Line']
+        if ln not in line_totals:
+            line_totals[ln] = 0
+        line_totals[ln] += item['Prod_Time']
     
     print("-" * 50)
     print(f"Date: {args.date}")
     print(f"Total Production Count (Items): {len(all_production_items)}")
     print(f"Total Production Time: {total_time_mins:.0f} minutes")
     print(f"Operation Rate (vs 480min): {operation_rate:.1f}%")
+    print("-" * 20)
+    print("Time per Line:")
+    for ln, t_min in line_totals.items():
+        print(f"  {ln}: {t_min:.0f} min ({(t_min/480)*100:.1f}%)")
     print("-" * 50)
     
     # Save to CSV (item_list_from_excel.txt)
