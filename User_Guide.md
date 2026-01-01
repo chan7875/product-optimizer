@@ -43,6 +43,19 @@ BOM 구조를 분석합니다.
 **로직 참고:**
 -   **공통 자재 제외**: 프로그램은 `common_material_list.csv`를 로드하여 정확성을 위해 "개별 자재" 수 및 교체 비용 계산에서 이 부품들을 **엄격히 제외**합니다.
 
+### C. 생산 시간 산출 (`calculate_schedule.py`)
+엑셀 형태의 생산 계획을 읽어 생산 시간을 계산합니다.
+
+| 옵션 | 설명 | 예시 |
+| :--- | :--- | :--- |
+| `--file` | 엑셀 파일 경로. (필수) | `python calculate_schedule.py --file "Schedule.xlsx"` |
+| `--date` | 생산 시간을 산출할 기준 날짜 (엑셀 헤더와 일치해야 함). | `python calculate_schedule.py ... --date "2024-01-01"` |
+
+**주요 기능:**
+-   **시간 계산**: `(CycleTime * Array * 수량 / 60) + 13분(준비시간)` 공식을 각 작업면(Top/Bottom)별로 적용.
+-   **결과 출력**: 화면에 총 생산 시간(분, 소수점 첫째자리 반올림)과 가동률 표시.
+-   **파일 생성**: `Input/item_list_from_excel.txt` 파일을 생성하여 최적화 프로그램 입력으로 활용 가능.
+
 ## 4. 출력 설명 (`optimization_sequence.csv`)
 
 결과 파일은 `D:\Develoment\ProductOptimize\Output\optimization_sequence.csv`에 저장됩니다.
