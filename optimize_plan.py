@@ -18,7 +18,7 @@ def main():
     args = parser.parse_args()
 
     # File Paths
-    base_dir = r"D:\Develoment\ProductOptimize"
+    base_dir = "."
     bom_path = os.path.join(base_dir, "Input", "BOM.txt")
     common_list_path = os.path.join(base_dir, "Input", "common_material_list.csv")
     output_path = os.path.join(base_dir, "Output", "optimization_result.csv")

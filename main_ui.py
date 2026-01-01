@@ -589,7 +589,7 @@ class ScheduleTab(QWidget):
             QMessageBox.warning(self, "Warning", "Please load or save an Excel file first.")
             return
 
-        # 1. Update Summary with Current Data
+        # 1. Update Summary with Current Data (Recalculate based on screen values)
         current_df = self.model_main.get_dataframe()
         split_col = getattr(self, 'split_col', 8) # default if not valid
         self.calc_summary(current_df, split_col)
@@ -601,54 +601,8 @@ class ScheduleTab(QWidget):
             if i < len(new_cols): new_cols[i] = ""
         summ_df.columns = new_cols
         self.model_summary.set_dataframe(summ_df)
-            
-        date_str, ok = QInputDialog.getText(self, "Select Date", "Enter Date (YYYY-MM-DD) matching column header:", text="2025-12-26")
-        if not ok: return
-        
-        setup_args = []
-        for line, le in self.setup_inputs.items():
-            val = le.text().strip()
-            if val:
-                setup_args.append(f"{line}:{val}")
-        setup_arg_str = ",".join(setup_args)
-        
-        # Save temp file for subprocess
-        try:
-            temp_path = os.path.join(os.path.dirname(self.current_filepath), "~temp_calc.xlsx")
-            current_df.to_excel(temp_path, index=False)
-            
-            cmd = [
-                sys.executable, 
-                r"D:\Develoment\ProductOptimize\calculate_schedule.py",
-                "--file", temp_path,
-                "--date", date_str,
-                "--setup-times", setup_arg_str
-            ]
-            result = subprocess.run(cmd, capture_output=True, text=True, encoding='cp949', errors='replace')
-            output_text = result.stdout
-            if result.stderr:
-                output_text += "\n[STDERR]\n" + result.stderr
-                
-            # Cleanup
-            if os.path.exists(temp_path):
-                os.remove(temp_path)
 
-            dlg = QDialog(self)
-            dlg.setWindowTitle("Production Time Calculation Result")
-            dlg.resize(700, 500)
-            layout = QVBoxLayout()
-            
-            text_edit = QTextEdit()
-            text_edit.setReadOnly(True)
-            text_edit.setFont(QFont("Courier New", 10))
-            text_edit.setText(output_text)
-            
-            layout.addWidget(text_edit)
-            dlg.setLayout(layout)
-            dlg.exec()
-            
-        except Exception as e:
-            QMessageBox.critical(self, "Error", str(e))
+        QMessageBox.information(self, "Success", "Production time and summary have been recalculated based on current table values.")
 
 
 class OptimizationTab(QWidget):
@@ -660,9 +614,9 @@ class OptimizationTab(QWidget):
         self.layout.addWidget(QLabel("<b>Input Files</b>"))
         self.input_layout = QVBoxLayout()
         
-        self.bom_edit = self.create_file_input("BOM File:", "D:\\Develoment\\ProductOptimize\\Input\\BOM.txt")
-        self.common_edit = self.create_file_input("Common Material List:", "D:\\Develoment\\ProductOptimize\\Input\\common_material_list.csv")
-        self.schedule_edit = self.create_file_input("Schedule Excel:", "D:\\Develoment\\ProductOptimize\\Input\\smd_schedule.xlsx")
+        self.bom_edit = self.create_file_input("BOM File:", "Input/BOM.txt")
+        self.common_edit = self.create_file_input("Common Material List:", "Input/common_material_list.csv")
+        self.schedule_edit = self.create_file_input("Schedule Excel:", "Input/smd_schedule.xlsx")
         
         self.layout.addLayout(self.input_layout)
         
@@ -742,7 +696,7 @@ class OptimizationTab(QWidget):
             return
 
         try:
-            base_input_dir = r"D:\Develoment\ProductOptimize\Input"
+            base_input_dir = "Input"
             
             def safe_copy(src, dst):
                 if os.path.abspath(src) != os.path.abspath(dst):
@@ -755,7 +709,7 @@ class OptimizationTab(QWidget):
             safe_copy(common_path, os.path.join(base_input_dir, "common_material_list.csv"))
             
             # Step 1: Optimize Plan (Analyze BOM)
-            cmd_plan = [sys.executable, r"D:\Develoment\ProductOptimize\optimize_plan.py"]
+            cmd_plan = [sys.executable, "optimize_plan.py"]
             subprocess.run(cmd_plan, check=True)
             
             # Step 2: Calculate Schedule (Get details for specific date)
@@ -765,7 +719,7 @@ class OptimizationTab(QWidget):
             
             cmd_schedule = [
                 sys.executable, 
-                r"D:\Develoment\ProductOptimize\calculate_schedule.py",
+                "calculate_schedule.py",
                 "--file", schedule_path,
                 "--date", date_str
             ]
@@ -778,7 +732,7 @@ class OptimizationTab(QWidget):
             )
             
             # Step 3: Run Sequence Optimization
-            cmd_seq = [sys.executable, r"D:\Develoment\ProductOptimize\optimize_sequence.py"]
+            cmd_seq = [sys.executable, "optimize_sequence.py"]
             
             if self.priority_edit.text():
                 cmd_seq.extend(["--priority", self.priority_edit.text()])
@@ -793,7 +747,7 @@ class OptimizationTab(QWidget):
             subprocess.run(cmd_seq, check=True)
             
             # Load Result
-            result_path = r"D:\Develoment\ProductOptimize\Output\optimization_sequence.csv"
+            result_path = "Output/optimization_sequence.csv"
             if os.path.exists(result_path):
                 df_res = pd.read_csv(result_path)
                 self.result_model.set_dataframe(df_res)

@@ -246,7 +246,7 @@ def load_common_materials(file_path):
 def main():
     args = parse_arguments()
     
-    base_dir = r"D:\Develoment\ProductOptimize"
+    base_dir = "."
     input_path = os.path.join(base_dir, "Output", "optimization_result.csv")
     item_list_path = os.path.join(base_dir, "Input", "item_list.txt")
     common_mat_path = os.path.join(base_dir, "Input", "common_material_list.csv")
