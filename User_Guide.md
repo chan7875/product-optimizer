@@ -65,3 +65,32 @@ BOM 구조를 분석합니다.
 ```powershell
 python D:\Develoment\ProductOptimize\optimize_sequence.py --layer TB
 ```
+
+## 5. 버전 관리 (Git)
+
+이 프로젝트는 Github를 통해 버전 관리가 되고 있습니다.
+
+-   **저장소 주소**: `https://github.com/chan7875/product-optimizer.git`
+
+### 기본 명령어 가이드
+
+1.  **현재 상태 확인**
+    ```powershell
+    git status
+    ```
+2.  **변경된 파일 스테이징 (준비)**
+    ```powershell
+    git add .
+    ```
+3.  **변경 사항 커밋 (저장)**
+    ```powershell
+    git commit -m "작업 내용에 대한 메시지"
+    ```
+4.  **Github에 업로드 (Push)**
+    ```powershell
+    git push
+    ```
+5.  **Github에서 다운로드 (Pull)**
+    ```powershell
+    git pull
+    ```
