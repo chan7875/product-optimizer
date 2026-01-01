@@ -432,7 +432,10 @@ class ScheduleTab(QWidget):
                 summ_df = self.model_summary.get_dataframe()
                 new_cols = list(summ_df.columns)
                 for i in range(self.split_col + 1):
-                    new_cols[i] = ""
+                    if i == self.split_col:
+                        new_cols[i] = "생산라인"
+                    else:
+                        new_cols[i] = ""
                 summ_df.columns = new_cols
                 self.model_summary.set_dataframe(summ_df)
                 
@@ -598,7 +601,11 @@ class ScheduleTab(QWidget):
         summ_df = self.model_summary.get_dataframe()
         new_cols = list(summ_df.columns)
         for i in range(split_col + 1):
-            if i < len(new_cols): new_cols[i] = ""
+            if i < len(new_cols):
+                if i == split_col:
+                    new_cols[i] = "생산라인"
+                else:
+                    new_cols[i] = ""
         summ_df.columns = new_cols
         self.model_summary.set_dataframe(summ_df)
 
