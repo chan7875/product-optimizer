@@ -143,3 +143,32 @@ python D:\Develoment\ProductOptimize\main_ui.py
 1.  **파일 선택**: BOM, 생산 계획, 공통 부품 리스트 파일을 선택합니다.
 2.  **옵션 설정**: 우선순위(Priority), 레이어(Layer) 옵션 등을 입력합니다.
 3.  **실행 (`Run Optimization`)**: 최적화 스크립트를 실행하고 결과를 화면에 표시합니다.
+
+### C. 날짜별 최적화 (Date Range Optimization)
+**Optimization 탭**에서 특정 날짜 범위에 대해 일괄 최적화를 수행합니다.
+
+1.  **날짜 범위 선택**:
+    -   `Run Optimization` 버튼 클릭 시 날짜 범위(Start Date ~ End Date)를 선택하는 팝업이 표시됩니다.
+2.  **일괄 실행**:
+    -   선택한 기간 내의 모든 날짜에 대해 자동으로 생산 계획을 생성하고 최적화를 수행합니다.
+    -   해당 날짜에 데이터가 없는 경우 자동으로 건너뛰거나 빈 결과를 표시합니다.
+3.  **결과 확인 (탭 뷰)**:
+    -   결과 화면이 탭(Start Date, Start Date+1, ...) 형식으로 표시되어 날짜별 최적화 결과를 쉽게 전환하며 확인할 수 있습니다.
+4.  **엑셀 내보내기**:
+    -   `Export Result to Excel` 버튼을 클릭하면 **현재 보고 있는 탭**의 데이터를 엑셀로 저장합니다.
+
+### D. SMD 데이터 검증 (SMD Data Verification)
+JSON 기반의 SMD/PCB 데이터를 검증하고 CubicSMT 실행을 돕는 탭입니다.
+
+1.  **폴더 로드 (`Load Folder`)**:
+    -   최상위 폴더를 선택하면 하위 디렉토리를 재귀적으로 탐색하여 `jsonInfo.txt` 파일을 찾습니다.
+    -   기본 경로: `Y:\CadDesign\Manufacture\NW\Design_25`
+2.  **데이터 보기 (Split View)**:
+    -   **좌측 (트리)**: SMD Code 및 PCB Code 구조를 트리 형태로 표시합니다. 항목 클릭 시 우측 테이블이 필터링됩니다.
+        -   **필터 초기화**: 트리 상단 헤더(`SMD Code / PCB Code`)를 클릭하면 전체 목록을 다시 볼 수 있습니다.
+    -   **우측 (테이블)**: PCB Code, Rev, SMD Code, BOM/Gerber 파일명 등 상세 정보를 표시합니다.
+        -   **BOM File**: 여러 개의 파일이 있는 경우 줄바꿈으로 구분되어 표시됩니다.
+3.  **SMD Pro 실행**:
+    -   테이블의 `Check` 박스를 선택한 후 상단의 `SMD Pro 실행` 버튼을 클릭합니다.
+    -   선택된 항목의 경로에 있는 `jsonInfo.txt`를 인자로 하여 `CubicSMT.exe`를 실행합니다.
+    -   **실행 명령어**: `CubicSMT.exe -nwJsoninfo "{Path}\jsonInfo.txt" -nwMounter`
