@@ -1,0 +1,16 @@
+1. 사용자가 특정 폴더를 지정하면 해당 폴더의 하위 폴더를 검색을 해서 jsonInfo.txt 를 찾는다.
+2. jsonInfo.txt 는 json 포맷으로 되어 있어
+1) basicInfo 에서 파싱할 정보
+ - pcbCode : PCB Code (EP41-01956A)
+ - smdCode : 품목코드 (EP94-05057A)
+ - smdNm : 품목명 (AMP-PA4489-03A)
+ - pcbSize : "75.5 x 179 x .635"
+2) cadFileInfo 에서 파싱할 정보
+- neutralFileNm 의 값은 neutral 파일의 이름이 적혀 있어.
+- gerberFileNm 의 값은 gerber 파일의 이름이 적혀 있어.
+- matrList 에는 2개 이상의 항목이 있을 수 있고,
+  matrFileNm 에 BOM 파일 이름이 적혀 있어.
+  -> BOM 파일 형식은 보통 excel 파일이야.
+  
+3. 해당 기능을 개발하기 위해서 main tab 을 추가를 해서 개발을 해 줘
+4. 1번 사항에 대한 UI 를 개발
