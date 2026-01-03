@@ -171,4 +171,8 @@ JSON 기반의 SMD/PCB 데이터를 검증하고 CubicSMT 실행을 돕는 탭�
 3.  **SMD Pro 실행**:
     -   테이블의 `Check` 박스를 선택한 후 상단의 `SMD Pro 실행` 버튼을 클릭합니다.
     -   선택된 항목의 경로에 있는 `jsonInfo.txt`를 인자로 하여 `CubicSMT.exe`를 실행합니다.
-    -   **실행 명령어**: `CubicSMT.exe -nwJsoninfo "{Path}\jsonInfo.txt" -nwMounter`
+4.  **CAD-BOM 체크 리포트 (CAD-BOM Report Viewer)**:
+    -   우측 상단 테이블의 행을 **클릭**하면 해당 모델에 대한 검증 리포트를 조회합니다.
+    -   **검색 경로**: `L:\CADBomReport`
+    -   **파일명 규칙**: `{SMD Code}_{PCB Code}`로 시작하는 엑셀 파일.
+    -   **화면 표시**: 우측 하단 탭 영역에 엑셀 파일의 모든 시트 내용을 표시합니다. (1/2 화면 분할)

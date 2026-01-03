@@ -141,20 +141,20 @@ class SMDVerificationTab(QWidget):
         
         self.btn_load_folder = QPushButton("Load Folder")
         self.btn_load_folder.clicked.connect(self.load_folder)
+
+        self.lbl_path = QLabel("No folder selected")
         
         self.btn_run_smd = QPushButton("SMD Pro 실행")
         self.btn_run_smd.clicked.connect(self.run_smd_pro)
         
-        self.lbl_path = QLabel("No folder selected")
-        
         top_bar.addWidget(self.btn_load_folder)
-        top_bar.addWidget(self.btn_run_smd)
         top_bar.addWidget(self.lbl_path)
+        top_bar.addWidget(self.btn_run_smd)
         top_bar.addStretch()
         
         self.layout.addWidget(self.top_container)
         
-        # Splitter (Left: Tree, Right: Table)
+        # Main Horizontal Splitter
         self.splitter = QSplitter(Qt.Orientation.Horizontal)
         
         # Left: Tree Widget (Filter/Navigation)
@@ -163,18 +163,31 @@ class SMDVerificationTab(QWidget):
         self.tree.setFixedWidth(250)
         self.splitter.addWidget(self.tree)
         
-        # Right: Table Widget (Details)
+        # Right Container (Vertical Splitter)
+        self.right_splitter = QSplitter(Qt.Orientation.Vertical)
+        
+        # Right Top: Table Widget (Details)
         self.table = QTableWidget()
         cols = ["Check", "PCB Code", "Rev", "SMD Code", "Model Name", "PCB Size", 
-                "Neutral File", "BOM File", "Gerber File", "Matr Count", "Path"]
+                "Neutral File", "Gerber File", "BOM File", "BOM Count", "Path"]
         self.table.setColumnCount(len(cols))
         self.table.setHorizontalHeaderLabels(cols)
         self.table.setAlternatingRowColors(True)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
-        self.splitter.addWidget(self.table)
+        self.right_splitter.addWidget(self.table)
         
-        # Set Splitter Stretch
-        self.splitter.setStretchFactor(1, 1)
+        # Right Bottom: Report View
+        self.report_tabs = QTabWidget()
+        self.right_splitter.addWidget(self.report_tabs)
+        
+        # Set Right Splitter Stretch (50:50)
+        self.right_splitter.setStretchFactor(0, 1)
+        self.right_splitter.setStretchFactor(1, 1)
+        
+        self.splitter.addWidget(self.right_splitter)
+        
+        # Set Main Splitter Stretch (Tree:Right => FixedWidth:Expand)
+        self.splitter.setStretchFactor(1, 1) 
         
         self.layout.addWidget(self.splitter)
         self.setLayout(self.layout)
@@ -184,6 +197,60 @@ class SMDVerificationTab(QWidget):
         self.tree.itemClicked.connect(self.filter_table)
         self.tree.header().setSectionsClickable(True)
         self.tree.header().sectionClicked.connect(self.reset_filter)
+        
+        # Connect Table Click for Report
+        self.table.itemClicked.connect(self.load_cad_bom_report)
+
+    def load_cad_bom_report(self, item):
+        row = item.row()
+        # Cols: 1=PCB, 3=SMD
+        pcb_item = self.table.item(row, 1)
+        smd_item = self.table.item(row, 3)
+        
+        if not pcb_item or not smd_item: return
+        
+        pcb_code = pcb_item.text().strip()
+        smd_code = smd_item.text().strip()
+        
+        report_dir = r"L:\CADBomReport"
+        target_prefix = f"{smd_code}_{pcb_code}"
+        found_file = None
+        
+        if os.path.exists(report_dir):
+            try:
+                for f in os.listdir(report_dir):
+                    if f.startswith(target_prefix) and f.lower().endswith(('.xlsx', '.xls')):
+                        found_file = os.path.join(report_dir, f)
+                        break
+            except Exception as e:
+                print(f"Directory scan error: {e}")
+                
+        self.report_tabs.clear()
+        
+        if found_file:
+            try:
+                xls = pd.read_excel(found_file, sheet_name=None)
+                for sheet_name, df in xls.items():
+                    tab = QWidget()
+                    lay = QVBoxLayout(tab)
+                    lay.setContentsMargins(2,2,2,2)
+                    
+                    tv = QTableView()
+                    model = PandasModel(df)
+                    tv.setModel(model)
+                    tv.setAlternatingRowColors(True)
+                    # Using Interactive mode for better performance on large sheets, but resize to contents initially
+                    tv.horizontalHeader().setStretchLastSection(True)
+                    tv.resizeColumnsToContents()
+                    
+                    lay.addWidget(tv)
+                    self.report_tabs.addTab(tab, sheet_name)
+            except Exception as e:
+                lbl = QLabel(f"Error loading report: {e}")
+                self.report_tabs.addTab(lbl, "Error")
+        else:
+            # Optional: Feedback if needed
+            pass
 
     def load_folder(self):
         default_dir = r"Y:\CadDesign\Manufacture\NW\Design_25"
@@ -346,8 +413,8 @@ class SMDVerificationTab(QWidget):
             self.table.setItem(i, 4, QTableWidgetItem(data['smdNm']))
             self.table.setItem(i, 5, QTableWidgetItem(data['pcbSize']))
             self.table.setItem(i, 6, QTableWidgetItem(data['neutralFileNm']))
-            self.table.setItem(i, 7, QTableWidgetItem(data['bomFiles']))
-            self.table.setItem(i, 8, QTableWidgetItem(data['gerberFileNm']))
+            self.table.setItem(i, 7, QTableWidgetItem(data['gerberFileNm']))
+            self.table.setItem(i, 8, QTableWidgetItem(data['bomFiles']))
             self.table.setItem(i, 9, QTableWidgetItem(str(data['matrCount'])))
             self.table.setItem(i, 10, QTableWidgetItem(data['FolderPath']))
 
@@ -1073,7 +1140,7 @@ class DateRangeDialog(QDialog):
         self.start_date = QDateEdit()
         self.start_date.setCalendarPopup(True)
         self.start_date.setDisplayFormat("yyyy-MM-dd")
-        self.start_date.setDate(QDate.currentDate())
+        self.start_date.setDate(QDate(2025, 12, 14))
         h1.addWidget(self.start_date)
         self.layout.addLayout(h1)
         
@@ -1083,7 +1150,7 @@ class DateRangeDialog(QDialog):
         self.end_date = QDateEdit()
         self.end_date.setCalendarPopup(True)
         self.end_date.setDisplayFormat("yyyy-MM-dd")
-        self.end_date.setDate(QDate.currentDate())
+        self.end_date.setDate(QDate(2025, 12, 15))
         h2.addWidget(self.end_date)
         self.layout.addLayout(h2)
         
@@ -1352,7 +1419,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Production Optimization & Schedule Manager")
-        self.resize(1200, 800)
+        self.resize(2048, 1024)
         
         self.tabs = QTabWidget()
         self.setCentralWidget(self.tabs)

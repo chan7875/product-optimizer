@@ -1,0 +1,68 @@
+{
+  "basicInfo": {
+    "reqType": "SMDP",
+    "pcbPgmId": "D_EP41-01423A_PCS01C_02",
+    "plantCode": "P101",
+    "smdCode": "EP94-03583A",
+    "smdNm": "SM-RP0T-07F",
+    "pbaCode": "EP92-02617A",
+    "pbaNm": "PBA-RP0T-07F",
+    "pcbCode": "EP41-01423A",
+    "pcbNm": "PCB-RP0T-07F",
+    "pcbVer": "PCS01C",
+    "pcbSize": "378 x 319 x 2.9",
+    "seq": "2",
+    "execUserId": "dwson",
+    "execUserNm": "손동욱",
+    "execDt": "2022-01-24",
+    "matrListType": "BOM",
+    "bomFileId": "6aa68dec89acz2zasa1k61of0r1acn4pz",
+    "bomAplyDt": "2022-01-24",
+    "aplyDueDt": "2022-01-24",
+    "pcbMstId": "0CGLHBFQCl4MBF",
+    "filePath": "D:\\Design\\SMT\\NW\\TRX_EP41-01423A\\",
+	"procCode": "SMD",
+    "routeCode": "BOT##TOP",
+	"serverType": "TESTHQ"
+  },
+  "cadFileInfo": {
+    "pcbPgmId": "D_EP41-01423A_PCS01C_02",
+    "pcbMstId": "0CGLHBFQCl4MBF",
+    "edcDrwnId": "2619_ED00013322",
+    "edcDrwnNm": "RP0T-07F",
+    "edcDrwnVer": "v0.13P",
+    "gerberFileSn": "BOP00505697f4e2yrphz21k5bqk0g0n5bcdt",
+    "gerberFileNm": "Gerber1.zip",
+    "neutralFileSn": "BOP00505697f4e2yrphz21k5bqk0g1dn4cdy",
+    "neutralFileNm": "07_RP0T-07F_PCS01B_XEneutralFile_200121.txt"
+  },
+  "matrList": [
+    {
+      "pcbPgmId": "D_EP41-01423A_PCS01C_02",
+      "matrListType": "PBA_BOM",
+      "matrCode": "EP92-02617A",
+      "matrFileSn": "BOP6aa68dec89acz2zasa1k61of0r1acs4q0",
+      "matrFileNm": "EP92-02617A.xlsx"
+    }
+  ],
+  "smdpFileInfo": {
+    "proFileSn": "BOPd6966fa462eczh9b6g1k64ig1h00jxo6v",
+    "proFileNm": "07_RP0T-07F_PCS01B_XEneutralFile_200121_20230725_1430.pro"
+  },
+  "swSpecList": [
+    {
+      "pbaCode": "EP92-02617A",
+      "romMatrCode": "1107-002381",
+      "romMatrLocCode": "U84",
+      "chcksmValue": "C3E6",
+	  "packageType"  : "reel"
+    },
+    {
+      "pbaCode": "EP92-02617A",
+      "romMatrCode": "1203-008808",
+      "romMatrLocCode": "U64",
+      "chcksmValue": "5C51",
+	  "packageType"  : "tray"
+    }
+  ]
+}

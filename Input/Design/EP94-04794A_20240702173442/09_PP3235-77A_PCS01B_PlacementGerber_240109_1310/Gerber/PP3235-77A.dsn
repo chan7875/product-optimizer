@@ -1,0 +1,49 @@
+{Program	Expedition GerbTool(tm)
+	{Version	8.1.2 X1}
+	{Created	Tue Jan 09 13:23:11 2024}
+}
+{Environment
+	{ViewMetric	Yes}
+}
+{Layers
+	{Layer  1
+		{File		place_t.gdo}
+		{LyrName	place_t}
+		{Visibility	On}
+		{Type		Other}
+		{Ftype		Gerber}
+	}
+	{Layer  2
+		{File		place_b.gdo}
+		{LyrName	place_b}
+		{Visibility	Off}
+		{Type		Other}
+		{Ftype		Gerber}
+	}
+	{Layer  3
+		{File		Height_Over_5mm_T.gdo}
+		{LyrName	Height_Over_5mm_T}
+		{Visibility	Off}
+		{Type		Other}
+		{Ftype		Gerber}
+	}
+	{Layer  4
+		{File		Height_Over_5mm_B.gdo}
+		{LyrName	Height_Over_5mm_B}
+		{Visibility	Off}
+		{Type		Other}
+		{Ftype		Gerber}
+	}
+}
+{Format Gerber
+	{Dialect		Absolute}
+	{m.n			3.4}
+	{Mode			Incremental}
+	{ZeroSuppression	Leading}
+	{Terminator		0x2a, 0xd, 0xa}
+	{Metric			No}
+	{Modal			No}
+	{CharSet		ASCII}
+	{Arcs360		Yes}
+	{ArcsModal		No}
+}

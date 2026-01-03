@@ -1,0 +1,1412 @@
+{
+	"tbmMeWiDVO": {
+		"uniqId": "0CGY4JX4Pl4MBF",
+		"gbm": "N",
+		"modelNm": "EP94-03583A",
+		"regTypeCode": "BASIC_MODEL",
+		"surfaceCode": "BOTTOM",
+		"wiRevNo": "0.1",
+		"cadUniqId": "0CGY23PSCl4MBF",
+		"pbaPcsCode": null,
+		"pcbRevNo": "01C",
+		"partTypeCode": "PBA_BOM",
+		"bomAplyDt": "20220419000000",
+		"procCode": "SMD",
+		"fstRegerId": "eunyoung17.chae",
+		"fstRegerNm": "채은영",
+		"tbmMeWiPageList": [
+			{
+				"uniqId": "0CH0SYBACl4MBF",
+				"seq": 1,
+				"korPageNm": "Reflow CBS 설정",
+				"engPageNm": "Reflow CBS Setting",
+				"oprUniqId": "0CH0SYBAAl4MBF",
+				"procSignCode": null,
+				"surfaceCode": "BOTH",
+				"wiTypeCode": "CBS_INFO",
+				"classId": "CBSDisplayUnitWork",
+				"partList": [],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBAUl4MBF",
+				"seq": 2,
+				"korPageNm": "Label 부착",
+				"engPageNm": "Attach Label",
+				"oprUniqId": "0CH0SYBARl4MBF",
+				"procSignCode": "MATR_LAB",
+				"surfaceCode": "AUTO",
+				"wiTypeCode": "MATERIAL_INFO",
+				"classId": "LabelDisplayUnitWork",
+				"partList": [
+					{
+						"assyLocNo": "LB_PBA",
+						"colorCode": "#FFFF00",
+						"partCode": "EP68-00602A",
+						"pointCnt": 0,
+						"polarPinNum": null,
+						"refPartCode": null,
+						"uniqId": "0CH0SYBATl4MBF"
+					}
+				],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBB0l4MBF",
+				"seq": 3,
+				"korPageNm": "PCB DM Matching",
+				"engPageNm": "PCB DM Matching",
+				"oprUniqId": "0CH0SYBAYl4MBF",
+				"procSignCode": null,
+				"surfaceCode": "BOTH",
+				"wiTypeCode": null,
+				"classId": "BarcodeDisplayUnitWork",
+				"partList": [],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBCVl4MBF",
+				"seq": 4,
+				"korPageNm": "BOTTOM 실장",
+				"engPageNm": "BOTTOM Mount",
+				"oprUniqId": "0CH0SYBB1l4MBF",
+				"procSignCode": "MATR_ALL",
+				"surfaceCode": "BOTTOM",
+				"wiTypeCode": "MOUNT_INFO",
+				"classId": "HighlightDisplayUnitWork",
+				"partList": [
+					{
+						"assyLocNo": "D3,D6",
+						"colorCode": "#FFFF00",
+						"partCode": "0401-000132",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBB3l4MBF"
+					},
+					{
+						"assyLocNo": "D12,D18,D19",
+						"colorCode": "#6666FF",
+						"partCode": "0406-001070",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBB4l4MBF"
+					},
+					{
+						"assyLocNo": "TVS3,TVS4",
+						"colorCode": "#CCFFCC",
+						"partCode": "0406-001446",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBB5l4MBF"
+					},
+					{
+						"assyLocNo": "Q38,Q39",
+						"colorCode": "#FF33FF",
+						"partCode": "0505-001076",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBB6l4MBF"
+					},
+					{
+						"assyLocNo": "Q28,Q36",
+						"colorCode": "#FFCC33",
+						"partCode": "0505-001477",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBB7l4MBF"
+					},
+					{
+						"assyLocNo": "Q13,Q14,Q15,Q16,Q21,Q22,Q23,Q26,Q29,Q30,Q37",
+						"colorCode": "#FF3333",
+						"partCode": "0505-001845",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBB8l4MBF"
+					},
+					{
+						"assyLocNo": "Q27",
+						"colorCode": "#66CCCC",
+						"partCode": "0505-003366",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBB9l4MBF"
+					},
+					{
+						"assyLocNo": "Q12,Q31,Q32,Q33,Q40,Q8",
+						"colorCode": "#FFCCCC",
+						"partCode": "0505-003397",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBAl4MBF"
+					},
+					{
+						"assyLocNo": "Q1,Q9",
+						"colorCode": "#FF6600",
+						"partCode": "0505-003443",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBBl4MBF"
+					},
+					{
+						"assyLocNo": "Q24,Q25",
+						"colorCode": "#66CC00",
+						"partCode": "0505-003454",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBCl4MBF"
+					},
+					{
+						"assyLocNo": "Q35",
+						"colorCode": "#33FF33",
+						"partCode": "0505-003533",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBDl4MBF"
+					},
+					{
+						"assyLocNo": "Q3,Q4,Q6,Q7",
+						"colorCode": "#9966FF",
+						"partCode": "0505-003786",
+						"pointCnt": 0,
+						"polarPinNum": "4",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBEl4MBF"
+					},
+					{
+						"assyLocNo": "Q17,Q18,Q19,Q20",
+						"colorCode": "#CC9900",
+						"partCode": "0505-003787",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBFl4MBF"
+					},
+					{
+						"assyLocNo": "LED1,LED2,LED3",
+						"colorCode": "#33FFFF",
+						"partCode": "0601-001094",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBGl4MBF"
+					},
+					{
+						"assyLocNo": "LED10,LED7,LED8,LED9",
+						"colorCode": "#996600",
+						"partCode": "0601-002825",
+						"pointCnt": 0,
+						"polarPinNum": "4",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBHl4MBF"
+					},
+					{
+						"assyLocNo": "PC1,PC2,PC3,PC4",
+						"colorCode": "#FF99CC",
+						"partCode": "0604-001408",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBIl4MBF"
+					},
+					{
+						"assyLocNo": "U2,U3,U4,U5,U6,U7",
+						"colorCode": "#9900FF",
+						"partCode": "1001-001995",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBJl4MBF"
+					},
+					{
+						"assyLocNo": "U12,U13,U14,U15,U19,U20,U21,U22",
+						"colorCode": "#669933",
+						"partCode": "1001-002079",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBKl4MBF"
+					},
+					{
+						"assyLocNo": "U23",
+						"colorCode": "#66CCFF",
+						"partCode": "1002-001792",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBLl4MBF"
+					},
+					{
+						"assyLocNo": "U74",
+						"colorCode": "#66CCFF",
+						"partCode": "1006-001589",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBMl4MBF"
+					},
+					{
+						"assyLocNo": "U77",
+						"colorCode": "#FFFF00",
+						"partCode": "1006-001590",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBNl4MBF"
+					},
+					{
+						"assyLocNo": "U83",
+						"colorCode": "#6666FF",
+						"partCode": "1105-002867",
+						"pointCnt": 0,
+						"polarPinNum": "A1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBOl4MBF"
+					},
+					{
+						"assyLocNo": "U84",
+						"colorCode": "#CCFFCC",
+						"partCode": "1107-002381",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBPl4MBF"
+					},
+					{
+						"assyLocNo": "U32,U39,U42,U43,U86,U87,U88,U89",
+						"colorCode": "#FF33FF",
+						"partCode": "1201-004083",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBQl4MBF"
+					},
+					{
+						"assyLocNo": "U24,U25,U29,U30",
+						"colorCode": "#FFCC33",
+						"partCode": "1201-004101",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBRl4MBF"
+					},
+					{
+						"assyLocNo": "U41,U44,U56,U59",
+						"colorCode": "#FF3333",
+						"partCode": "1201-004145",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBSl4MBF"
+					},
+					{
+						"assyLocNo": "U76",
+						"colorCode": "#66CCCC",
+						"partCode": "1203-005714",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBTl4MBF"
+					},
+					{
+						"assyLocNo": "U73",
+						"colorCode": "#FFCCCC",
+						"partCode": "1203-006984",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBUl4MBF"
+					},
+					{
+						"assyLocNo": "U33",
+						"colorCode": "#FF6600",
+						"partCode": "1203-007361",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBVl4MBF"
+					},
+					{
+						"assyLocNo": "U26,U27,U28,U66",
+						"colorCode": "#66CC00",
+						"partCode": "1203-007757",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBWl4MBF"
+					},
+					{
+						"assyLocNo": "U34,U37,U60",
+						"colorCode": "#33FF33",
+						"partCode": "1203-008060",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBXl4MBF"
+					},
+					{
+						"assyLocNo": "U62,U65,U70",
+						"colorCode": "#9966FF",
+						"partCode": "1203-008073",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBYl4MBF"
+					},
+					{
+						"assyLocNo": "U1,U10,U8,U9",
+						"colorCode": "#CC9900",
+						"partCode": "1203-008134",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBBZl4MBF"
+					},
+					{
+						"assyLocNo": "U61,U71",
+						"colorCode": "#33FFFF",
+						"partCode": "1203-008275",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC0l4MBF"
+					},
+					{
+						"assyLocNo": "U69",
+						"colorCode": "#996600",
+						"partCode": "1203-008294",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC1l4MBF"
+					},
+					{
+						"assyLocNo": "U45,U46,U51,U52,U53,U54,U55",
+						"colorCode": "#FF99CC",
+						"partCode": "1203-008323",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC2l4MBF"
+					},
+					{
+						"assyLocNo": "U72",
+						"colorCode": "#9900FF",
+						"partCode": "1203-008801",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC3l4MBF"
+					},
+					{
+						"assyLocNo": "U64",
+						"colorCode": "#669933",
+						"partCode": "1203-008808",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC4l4MBF"
+					},
+					{
+						"assyLocNo": "U67",
+						"colorCode": "#66CCFF",
+						"partCode": "1203-008852",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC5l4MBF"
+					},
+					{
+						"assyLocNo": "U63",
+						"colorCode": "#66CCFF",
+						"partCode": "1203-008892",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC6l4MBF"
+					},
+					{
+						"assyLocNo": "U75",
+						"colorCode": "#FFFF00",
+						"partCode": "1203-009073",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC7l4MBF"
+					},
+					{
+						"assyLocNo": "U11,U16",
+						"colorCode": "#6666FF",
+						"partCode": "1203-009074",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC8l4MBF"
+					},
+					{
+						"assyLocNo": "U31,U35,U57,U58",
+						"colorCode": "#CCFFCC",
+						"partCode": "1204-003649",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBC9l4MBF"
+					},
+					{
+						"assyLocNo": "U17,U18,U36,U40,U68",
+						"colorCode": "#FF33FF",
+						"partCode": "1209-002472",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCAl4MBF"
+					},
+					{
+						"assyLocNo": "U81",
+						"colorCode": "#FFCC33",
+						"partCode": "1301-002230",
+						"pointCnt": 0,
+						"polarPinNum": "A1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCBl4MBF"
+					},
+					{
+						"assyLocNo": "C1092,C1171,C1197,C1216",
+						"colorCode": "#FF3333",
+						"partCode": "2409-001114",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCCl4MBF"
+					},
+					{
+						"assyLocNo": "C1046,C1152,C1248,C1249,C1250,C1251,C1445,C1446,C1447,C1448,C720",
+						"colorCode": "#66CCCC",
+						"partCode": "2409-001317",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCDl4MBF"
+					},
+					{
+						"assyLocNo": "C1059,C1153,C993",
+						"colorCode": "#FFCCCC",
+						"partCode": "2409-001346",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCEl4MBF"
+					},
+					{
+						"assyLocNo": "Y2",
+						"colorCode": "#FF6600",
+						"partCode": "2804-002040",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCFl4MBF"
+					},
+					{
+						"assyLocNo": "Y1",
+						"colorCode": "#66CC00",
+						"partCode": "2806-001471",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCGl4MBF"
+					},
+					{
+						"assyLocNo": "P42,P43",
+						"colorCode": "#33FF33",
+						"partCode": "3710-003325",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCHl4MBF"
+					},
+					{
+						"assyLocNo": "P40",
+						"colorCode": "#9966FF",
+						"partCode": "3711-005293",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCIl4MBF"
+					},
+					{
+						"assyLocNo": "P46",
+						"colorCode": "#CC9900",
+						"partCode": "3711-009147",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCJl4MBF"
+					},
+					{
+						"assyLocNo": "P41",
+						"colorCode": "#33FFFF",
+						"partCode": "3711-009561",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCKl4MBF"
+					},
+					{
+						"assyLocNo": "P44,P45",
+						"colorCode": "#996600",
+						"partCode": "3719-002399",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCLl4MBF"
+					},
+					{
+						"assyLocNo": "P48",
+						"colorCode": "#FF99CC",
+						"partCode": "3722-002712",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCMl4MBF"
+					},
+					{
+						"assyLocNo": "P47",
+						"colorCode": "#9900FF",
+						"partCode": "3722-004058",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCNl4MBF"
+					},
+					{
+						"assyLocNo": "RF1,RF2,RF3,RF4,RF5,RF6,RF7,RF8",
+						"colorCode": "#669933",
+						"partCode": "4709-001900",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCOl4MBF"
+					},
+					{
+						"assyLocNo": "BAL1,BAL2,BAL3,BAL4,BAL5,BAL6",
+						"colorCode": "#66CCFF",
+						"partCode": "4709-002263",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCPl4MBF"
+					},
+					{
+						"assyLocNo": "TER1,TER2,TER3,TER4",
+						"colorCode": "#66CCFF",
+						"partCode": "4709-002324",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCQl4MBF"
+					},
+					{
+						"assyLocNo": "BAL10,BAL7,BAL8,BAL9",
+						"colorCode": "#FFFF00",
+						"partCode": "4709-002350",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCRl4MBF"
+					},
+					{
+						"assyLocNo": "ISO1,ISO2,ISO3,ISO4",
+						"colorCode": "#6666FF",
+						"partCode": "4709-002485",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCSl4MBF"
+					},
+					{
+						"assyLocNo": "CIR1,CIR2,CIR3,CIR4",
+						"colorCode": "#CCFFCC",
+						"partCode": "4709-002846",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCTl4MBF"
+					},
+					{
+						"assyLocNo": "L214",
+						"colorCode": "#FF33FF",
+						"partCode": "EP27-00013A",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBCUl4MBF"
+					}
+				],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBCYl4MBF",
+				"seq": 5,
+				"korPageNm": "BOTTOM Bonding",
+				"engPageNm": "BOTTOM Bonding",
+				"oprUniqId": "0CH0SYBCWl4MBF",
+				"procSignCode": null,
+				"surfaceCode": "BOTTOM",
+				"wiTypeCode": "BONDING_INFO",
+				"classId": "BondingDisplayRule",
+				"partList": [],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBD1l4MBF",
+				"seq": 6,
+				"korPageNm": "BOTTOM 실적처리",
+				"engPageNm": "BOTTOM Quantity Count",
+				"oprUniqId": "0CH0SYBCZl4MBF",
+				"procSignCode": null,
+				"surfaceCode": "BOTTOM",
+				"wiTypeCode": "EPASS_INFO",
+				"classId": "PolarityDisplayRule",
+				"partList": [],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBD6l4MBF",
+				"seq": 7,
+				"korPageNm": "TR Jig 삽입",
+				"engPageNm": "Insert TR Jig",
+				"oprUniqId": "0CH0SYBD2l4MBF",
+				"procSignCode": "MATR_TRJ",
+				"surfaceCode": "AUTO",
+				"wiTypeCode": "MATERIAL_INFO",
+				"classId": "JigDisplayRule",
+				"partList": [
+					{
+						"assyLocNo": "Q3,Q4,Q6,Q7",
+						"colorCode": "#FFFF00",
+						"partCode": "0505-003786",
+						"pointCnt": 0,
+						"polarPinNum": "4",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBD4l4MBF"
+					},
+					{
+						"assyLocNo": "Q17,Q18,Q19,Q20",
+						"colorCode": "#6666FF",
+						"partCode": "0505-003787",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBD5l4MBF"
+					}
+				],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBF1l4MBF",
+				"seq": 8,
+				"korPageNm": "TOP 실장",
+				"engPageNm": "TOP Mount",
+				"oprUniqId": "0CH0SYBD7l4MBF",
+				"procSignCode": "MATR_ALL",
+				"surfaceCode": "TOP",
+				"wiTypeCode": "MOUNT_INFO",
+				"classId": "HighlightDisplayUnitWork",
+				"partList": [
+					{
+						"assyLocNo": "D3,D6",
+						"colorCode": "#FFFF00",
+						"partCode": "0401-000132",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBD9l4MBF"
+					},
+					{
+						"assyLocNo": "D12,D18,D19",
+						"colorCode": "#6666FF",
+						"partCode": "0406-001070",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDAl4MBF"
+					},
+					{
+						"assyLocNo": "TVS3,TVS4",
+						"colorCode": "#CCFFCC",
+						"partCode": "0406-001446",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDBl4MBF"
+					},
+					{
+						"assyLocNo": "Q38,Q39",
+						"colorCode": "#FF33FF",
+						"partCode": "0505-001076",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDCl4MBF"
+					},
+					{
+						"assyLocNo": "Q28,Q36",
+						"colorCode": "#FFCC33",
+						"partCode": "0505-001477",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDDl4MBF"
+					},
+					{
+						"assyLocNo": "Q13,Q14,Q15,Q16,Q21,Q22,Q23,Q26,Q29,Q30,Q37",
+						"colorCode": "#FF3333",
+						"partCode": "0505-001845",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDEl4MBF"
+					},
+					{
+						"assyLocNo": "Q27",
+						"colorCode": "#66CCCC",
+						"partCode": "0505-003366",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDFl4MBF"
+					},
+					{
+						"assyLocNo": "Q12,Q31,Q32,Q33,Q40,Q8",
+						"colorCode": "#FFCCCC",
+						"partCode": "0505-003397",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDGl4MBF"
+					},
+					{
+						"assyLocNo": "Q1,Q9",
+						"colorCode": "#FF6600",
+						"partCode": "0505-003443",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDHl4MBF"
+					},
+					{
+						"assyLocNo": "Q24,Q25",
+						"colorCode": "#66CC00",
+						"partCode": "0505-003454",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDIl4MBF"
+					},
+					{
+						"assyLocNo": "Q35",
+						"colorCode": "#33FF33",
+						"partCode": "0505-003533",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDJl4MBF"
+					},
+					{
+						"assyLocNo": "Q3,Q4,Q6,Q7",
+						"colorCode": "#9966FF",
+						"partCode": "0505-003786",
+						"pointCnt": 0,
+						"polarPinNum": "4",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDKl4MBF"
+					},
+					{
+						"assyLocNo": "Q17,Q18,Q19,Q20",
+						"colorCode": "#CC9900",
+						"partCode": "0505-003787",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDLl4MBF"
+					},
+					{
+						"assyLocNo": "LED1,LED2,LED3",
+						"colorCode": "#33FFFF",
+						"partCode": "0601-001094",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDMl4MBF"
+					},
+					{
+						"assyLocNo": "LED10,LED7,LED8,LED9",
+						"colorCode": "#996600",
+						"partCode": "0601-002825",
+						"pointCnt": 0,
+						"polarPinNum": "4",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDNl4MBF"
+					},
+					{
+						"assyLocNo": "PC1,PC2,PC3,PC4",
+						"colorCode": "#FF99CC",
+						"partCode": "0604-001408",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDOl4MBF"
+					},
+					{
+						"assyLocNo": "U2,U3,U4,U5,U6,U7",
+						"colorCode": "#9900FF",
+						"partCode": "1001-001995",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDPl4MBF"
+					},
+					{
+						"assyLocNo": "U12,U13,U14,U15,U19,U20,U21,U22",
+						"colorCode": "#669933",
+						"partCode": "1001-002079",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDQl4MBF"
+					},
+					{
+						"assyLocNo": "U23",
+						"colorCode": "#66CCFF",
+						"partCode": "1002-001792",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDRl4MBF"
+					},
+					{
+						"assyLocNo": "U74",
+						"colorCode": "#66CCFF",
+						"partCode": "1006-001589",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDSl4MBF"
+					},
+					{
+						"assyLocNo": "U77",
+						"colorCode": "#FFFF00",
+						"partCode": "1006-001590",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDTl4MBF"
+					},
+					{
+						"assyLocNo": "U83",
+						"colorCode": "#6666FF",
+						"partCode": "1105-002867",
+						"pointCnt": 0,
+						"polarPinNum": "A1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDUl4MBF"
+					},
+					{
+						"assyLocNo": "U84",
+						"colorCode": "#CCFFCC",
+						"partCode": "1107-002381",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDVl4MBF"
+					},
+					{
+						"assyLocNo": "U32,U39,U42,U43,U86,U87,U88,U89",
+						"colorCode": "#FF33FF",
+						"partCode": "1201-004083",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDWl4MBF"
+					},
+					{
+						"assyLocNo": "U24,U25,U29,U30",
+						"colorCode": "#FFCC33",
+						"partCode": "1201-004101",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDXl4MBF"
+					},
+					{
+						"assyLocNo": "U41,U44,U56,U59",
+						"colorCode": "#FF3333",
+						"partCode": "1201-004145",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDYl4MBF"
+					},
+					{
+						"assyLocNo": "U76",
+						"colorCode": "#66CCCC",
+						"partCode": "1203-005714",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBDZl4MBF"
+					},
+					{
+						"assyLocNo": "U73",
+						"colorCode": "#FFCCCC",
+						"partCode": "1203-006984",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE0l4MBF"
+					},
+					{
+						"assyLocNo": "U33",
+						"colorCode": "#FF6600",
+						"partCode": "1203-007361",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE1l4MBF"
+					},
+					{
+						"assyLocNo": "U26,U27,U28,U66",
+						"colorCode": "#66CC00",
+						"partCode": "1203-007757",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE2l4MBF"
+					},
+					{
+						"assyLocNo": "U34,U37,U60",
+						"colorCode": "#33FF33",
+						"partCode": "1203-008060",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE3l4MBF"
+					},
+					{
+						"assyLocNo": "U62,U65,U70",
+						"colorCode": "#9966FF",
+						"partCode": "1203-008073",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE4l4MBF"
+					},
+					{
+						"assyLocNo": "U1,U10,U8,U9",
+						"colorCode": "#CC9900",
+						"partCode": "1203-008134",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE5l4MBF"
+					},
+					{
+						"assyLocNo": "U61,U71",
+						"colorCode": "#33FFFF",
+						"partCode": "1203-008275",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE6l4MBF"
+					},
+					{
+						"assyLocNo": "U69",
+						"colorCode": "#996600",
+						"partCode": "1203-008294",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE7l4MBF"
+					},
+					{
+						"assyLocNo": "U45,U46,U51,U52,U53,U54,U55",
+						"colorCode": "#FF99CC",
+						"partCode": "1203-008323",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE8l4MBF"
+					},
+					{
+						"assyLocNo": "U72",
+						"colorCode": "#9900FF",
+						"partCode": "1203-008801",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBE9l4MBF"
+					},
+					{
+						"assyLocNo": "U64",
+						"colorCode": "#669933",
+						"partCode": "1203-008808",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEAl4MBF"
+					},
+					{
+						"assyLocNo": "U67",
+						"colorCode": "#66CCFF",
+						"partCode": "1203-008852",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEBl4MBF"
+					},
+					{
+						"assyLocNo": "U63",
+						"colorCode": "#66CCFF",
+						"partCode": "1203-008892",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBECl4MBF"
+					},
+					{
+						"assyLocNo": "U75",
+						"colorCode": "#FFFF00",
+						"partCode": "1203-009073",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEDl4MBF"
+					},
+					{
+						"assyLocNo": "U11,U16",
+						"colorCode": "#6666FF",
+						"partCode": "1203-009074",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEEl4MBF"
+					},
+					{
+						"assyLocNo": "U31,U35,U57,U58",
+						"colorCode": "#CCFFCC",
+						"partCode": "1204-003649",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEFl4MBF"
+					},
+					{
+						"assyLocNo": "U17,U18,U36,U40,U68",
+						"colorCode": "#FF33FF",
+						"partCode": "1209-002472",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEGl4MBF"
+					},
+					{
+						"assyLocNo": "U81",
+						"colorCode": "#FFCC33",
+						"partCode": "1301-002230",
+						"pointCnt": 0,
+						"polarPinNum": "A1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEHl4MBF"
+					},
+					{
+						"assyLocNo": "C1092,C1171,C1197,C1216",
+						"colorCode": "#FF3333",
+						"partCode": "2409-001114",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEIl4MBF"
+					},
+					{
+						"assyLocNo": "C1046,C1152,C1248,C1249,C1250,C1251,C1445,C1446,C1447,C1448,C720",
+						"colorCode": "#66CCCC",
+						"partCode": "2409-001317",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEJl4MBF"
+					},
+					{
+						"assyLocNo": "C1059,C1153,C993",
+						"colorCode": "#FFCCCC",
+						"partCode": "2409-001346",
+						"pointCnt": 0,
+						"polarPinNum": "2",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEKl4MBF"
+					},
+					{
+						"assyLocNo": "Y2",
+						"colorCode": "#FF6600",
+						"partCode": "2804-002040",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBELl4MBF"
+					},
+					{
+						"assyLocNo": "Y1",
+						"colorCode": "#66CC00",
+						"partCode": "2806-001471",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEMl4MBF"
+					},
+					{
+						"assyLocNo": "P42,P43",
+						"colorCode": "#33FF33",
+						"partCode": "3710-003325",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBENl4MBF"
+					},
+					{
+						"assyLocNo": "P40",
+						"colorCode": "#9966FF",
+						"partCode": "3711-005293",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEOl4MBF"
+					},
+					{
+						"assyLocNo": "P46",
+						"colorCode": "#CC9900",
+						"partCode": "3711-009147",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEPl4MBF"
+					},
+					{
+						"assyLocNo": "P41",
+						"colorCode": "#33FFFF",
+						"partCode": "3711-009561",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEQl4MBF"
+					},
+					{
+						"assyLocNo": "P44,P45",
+						"colorCode": "#996600",
+						"partCode": "3719-002399",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBERl4MBF"
+					},
+					{
+						"assyLocNo": "P48",
+						"colorCode": "#FF99CC",
+						"partCode": "3722-002712",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBESl4MBF"
+					},
+					{
+						"assyLocNo": "P47",
+						"colorCode": "#9900FF",
+						"partCode": "3722-004058",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBETl4MBF"
+					},
+					{
+						"assyLocNo": "RF1,RF2,RF3,RF4,RF5,RF6,RF7,RF8",
+						"colorCode": "#669933",
+						"partCode": "4709-001900",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEUl4MBF"
+					},
+					{
+						"assyLocNo": "BAL1,BAL2,BAL3,BAL4,BAL5,BAL6",
+						"colorCode": "#66CCFF",
+						"partCode": "4709-002263",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEVl4MBF"
+					},
+					{
+						"assyLocNo": "TER1,TER2,TER3,TER4",
+						"colorCode": "#66CCFF",
+						"partCode": "4709-002324",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEWl4MBF"
+					},
+					{
+						"assyLocNo": "BAL10,BAL7,BAL8,BAL9",
+						"colorCode": "#FFFF00",
+						"partCode": "4709-002350",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEXl4MBF"
+					},
+					{
+						"assyLocNo": "ISO1,ISO2,ISO3,ISO4",
+						"colorCode": "#6666FF",
+						"partCode": "4709-002485",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEYl4MBF"
+					},
+					{
+						"assyLocNo": "CIR1,CIR2,CIR3,CIR4",
+						"colorCode": "#CCFFCC",
+						"partCode": "4709-002846",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBEZl4MBF"
+					},
+					{
+						"assyLocNo": "L214",
+						"colorCode": "#FF33FF",
+						"partCode": "EP27-00013A",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBF0l4MBF"
+					}
+				],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBF4l4MBF",
+				"seq": 9,
+				"korPageNm": "TOP Bonding",
+				"engPageNm": "TOP Bonding",
+				"oprUniqId": "0CH0SYBF2l4MBF",
+				"procSignCode": null,
+				"surfaceCode": "TOP",
+				"wiTypeCode": "BONDING_INFO",
+				"classId": "BondingDisplayRule",
+				"partList": [],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBF9l4MBF",
+				"seq": 10,
+				"korPageNm": "TR Jig 제거",
+				"engPageNm": "Insert TR Jig",
+				"oprUniqId": "0CH0SYBF5l4MBF",
+				"procSignCode": "MATR_TRJ",
+				"surfaceCode": "AUTO",
+				"wiTypeCode": "MATERIAL_INFO",
+				"classId": "HighlightDisplayUnitWork",
+				"partList": [
+					{
+						"assyLocNo": "Q3,Q4,Q6,Q7",
+						"colorCode": "#FFFF00",
+						"partCode": "0505-003786",
+						"pointCnt": 0,
+						"polarPinNum": "4",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBF7l4MBF"
+					},
+					{
+						"assyLocNo": "Q17,Q18,Q19,Q20",
+						"colorCode": "#6666FF",
+						"partCode": "0505-003787",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBF8l4MBF"
+					}
+				],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBFGl4MBF",
+				"seq": 11,
+				"korPageNm": "부품 Cap 제거",
+				"engPageNm": "Remove Pick-up Cap",
+				"oprUniqId": "0CH0SYBFDl4MBF",
+				"procSignCode": "MATR_PUC",
+				"surfaceCode": "BOTH",
+				"wiTypeCode": "MATERIAL_INFO",
+				"classId": "HighlightDisplayUnitWork",
+				"partList": [
+					{
+						"assyLocNo": "P41",
+						"colorCode": "#FFFF00",
+						"partCode": "3711-009561",
+						"pointCnt": 0,
+						"polarPinNum": "1",
+						"refPartCode": null,
+						"uniqId": "0CH0SYBFFl4MBF"
+					}
+				],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			},
+			{
+				"uniqId": "0CH0SYBFJl4MBF",
+				"seq": 12,
+				"korPageNm": "TOP 실적처리",
+				"engPageNm": "TOP Quantity Count",
+				"oprUniqId": "0CH0SYBFHl4MBF",
+				"procSignCode": null,
+				"surfaceCode": "TOP",
+				"wiTypeCode": "EPASS_INFO",
+				"classId": "HighlightDisplayUnitWork",
+				"partList": [],
+				"fileList": null,
+				"insertPart": null,
+				"skipPart": null
+			}
+		]
+	}
+}

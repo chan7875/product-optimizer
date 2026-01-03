@@ -1,0 +1,98 @@
+{
+  "basicInfo": {
+    "reqType": "SMDP",
+    "pcbPgmId": "D_EP41-01834A_01B_04",
+    "plantCode": "P101",
+    "gbmCode": "N",
+    "smdCode": "EP94-04794A",
+    "smdNm": "SM-PP3235-77A",
+    "pbaCode": "EP92-03152A",
+    "pbaNm": "PBA-PP3235-77A",
+    "pcbCode": "EP41-01834A",
+    "pcbNm": "PCB-PP3235-77A",
+    "pcbVer": "01B",
+    "pcbSize": "0 x 0 x 0",
+    "seq": "4",
+    "execUserId": "kim-sang",
+    "execUserNm": "김상용",
+    "execDt": "2024-07-02",
+    "matrListType": "BOM",
+    "bomFileId": "0209b386593fuzbzx11k872h0y17auazs",
+    "bomAplyDt": "2024-07-02",
+    "aplyDueDt": "2024-07-02",
+    "pcbMstId": "0CJVYEPI7l4MBF",
+    "smdMstId": "0CJYCZDD6l4MBF",
+    "filePath": "D:\\Design\\SMT\\NW\\EP94-04794A_20240702173442\\",
+    "routeCode": "BOT##TOP",
+    "serverType": "PROD"
+  },
+  "cadFileInfo": {
+    "pcbPgmId": "D_EP41-01834A_01B_04",
+    "pcbMstId": "0CJVYEPI7l4MBF",
+    "gerberFileSn": "BOP0050569747a8v0xbz61k86jg1n0n1o1d2",
+    "gerberFileNm": "09_PP3235-77A_PCS01B_PlacementGerber_240109_1310.zip",
+    "neutralFileSn": "BOP0050569747a8v0xbz61k86jg1n0oqu1d5",
+    "neutralFileNm": "07_PP3235-77A_PCS01B_VSS_XEneutralFile_240109_1310.txt"
+  },
+  "matrList": [
+    {
+      "pcbPgmId": "D_EP41-01834A_01B_04",
+      "matrListType": "PBA_BOM",
+      "matrCode": "EP92-03152A",
+      "matrFileSn": "BOP0209b386593fuzbzx11k872h0y17awazt",
+      "matrFileNm": "EP92-03152A.xlsx"
+    }
+  ],
+  "swSpecList": [
+    {
+      "pbaCode": "EP92-03152A",
+      "romMatrCode": "0904-003098",
+      "romMatrLocCode": "U10",
+      "chcksmValue": "15E3"
+    }
+  ],
+  "smdpFileInfo": {
+    "smdOtptType": "SMDP",
+    "smdOtptId": "0CJYCZDDHl4MBF",
+    "smdPgmId": "P_EP94-04794A_01B_SMDP_01",
+    "proFileSn": "BOPfe008507e865uzbz9h1k8729110b8360z",
+    "proFileNm": "EP41-01834A_01B_4_20240702_0937_R00.pro",
+    "seq": "1",
+    "botFileList": [
+      {
+        "smdPgmId": "P_EP94-04794A_01B_SMDP_01",
+        "botAtchFileSn": "BOPfe008507e865uzbz9h1k8729110b5360t",
+        "botAtchFileNm": "EP94-04794A_B_01B_20240702_0937_R00.csv",
+        "smdOtptId": "0CJYCZDDHl4MBF",
+        "atchFileTypeCode": "SMDP",
+        "seq": "1"
+      },
+      {
+        "smdPgmId": "P_EP94-04794A_01B_SMDP_01",
+        "botAtchFileSn": "BOPfe008507e865uzbz9h1k8729110bd1613",
+        "botAtchFileNm": "EP41-01834A_01B_4_20240702_0937_R00.pro",
+        "smdOtptId": "0CJYCZDDHl4MBF",
+        "atchFileTypeCode": "SMDP",
+        "seq": "1"
+      }
+    ],
+    "topFileList": [
+      {
+        "smdPgmId": "P_EP94-04794A_01B_SMDP_01",
+        "topAtchFileSn": "BOPfe008507e865uzbz9h1k8729110b2b60r",
+        "topAtchFileNm": "EP94-04794A_T_01B_20240702_0937_R00.csv",
+        "smdOtptId": "0CJYCZDDHl4MBF",
+        "atchFileTypeCode": "SMDP",
+        "seq": "1"
+      },
+      {
+        "smdPgmId": "P_EP94-04794A_01B_SMDP_01",
+        "topAtchFileSn": "BOPfe008507e865uzbz9h1k8729110bcb611",
+        "topAtchFileNm": "EP41-01834A_01B_4_20240702_0937_R00.pro",
+        "smdOtptId": "0CJYCZDDHl4MBF",
+        "atchFileTypeCode": "SMDP",
+        "seq": "1"
+      }
+    ]
+  }
+}
