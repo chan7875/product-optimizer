@@ -7,9 +7,12 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QH
                              QPushButton, QTableView, QFileDialog, QTabWidget, QLabel, 
                              QLineEdit, QMessageBox, QHeaderView, QAbstractItemView,
                              QInputDialog, QDialog, QTextEdit, QTableWidget, QTableWidgetItem,
-                             QDateEdit, QSplitter, QTreeWidget, QTreeWidgetItem)
-from PyQt6.QtCore import Qt, QAbstractTableModel, QModelIndex, QDate
-from PyQt6.QtGui import QColor, QFont
+                             QDateEdit, QSplitter, QTreeWidget, QTreeWidgetItem, QStackedWidget, QMenu, QStackedLayout,
+                             QGraphicsView, QGraphicsScene)
+from PyQt6.QtCore import Qt, QAbstractTableModel, QModelIndex, QDate, QUrl, QEvent, QPoint, QPointF, QRectF
+from PyQt6.QtGui import QColor, QFont, QCursor, QKeySequence, QWheelEvent, QPen, QBrush, QPainterPath, QPolygonF, QTransform
+from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWebEngineCore import QWebEngineSettings, QWebEnginePage
 import shutil
 import csv
 
@@ -122,9 +125,734 @@ class PandasModel(QAbstractTableModel):
         self.endResetModel()
 
 
+class NeutralFileParser:
+    def __init__(self):
+        self.board_outline = []
+        self.geometries = {}
+        self.components = []
+        
+    def parse(self, file_path):
+        self.board_outline = []
+        self.geometries = {}
+        self.components = []
+        
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                lines = f.readlines()
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            return None
+        
+        # Join continuation lines (ending with -)
+        joined_lines = []
+        current_line = ""
+        for line in lines:
+            stripped = line.rstrip()
+            if stripped.endswith('-'):
+                current_line += stripped[:-1] + " "  # Remove '-' and add space
+            else:
+                current_line += stripped
+                joined_lines.append(current_line)
+                current_line = ""
+        if current_line:
+            joined_lines.append(current_line)
+        
+        current_section = None
+        current_geom_name = None
+        
+        for line in joined_lines:
+            line = line.strip()
+            
+            # Section Detection
+            if 'Attribute Information' in line:
+                current_section = 'ATTR'
+                continue
+            elif 'Geometry Information' in line:
+                current_section = 'GEOM'
+                continue
+            elif 'Component Information' in line:
+                current_section = 'COMP'
+                continue
+            elif line.startswith('#'):
+                continue  # Skip comment/delimiter lines
+            
+            # Parse Attribute Section (Board Outline)
+            if current_section == 'ATTR' and line.startswith("B_ATTR") and "'BOARD_AREA'" in line:
+                coords = self._extract_coords(line)
+                self.board_outline = coords
+            
+            # Parse Geometry Section
+            if current_section == 'GEOM':
+                if line.startswith('GEOM '):
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        current_geom_name = parts[1]
+                        self.geometries[current_geom_name] = []
+                elif line.startswith("G_ATTR") and "'COMPONENT_PLACEMENT_OUTLINE'" in line and current_geom_name:
+                    coords = self._extract_coords(line)
+                    self.geometries[current_geom_name] = coords
+            
+            # Parse Component Section
+            if current_section == 'COMP':
+                if line.startswith('COMP '):
+                    parts = line.split()
+                    if len(parts) >= 9:
+                        try:
+                            comp = {
+                                'ref': parts[1],
+                                'part_no': parts[2],
+                                'name': parts[3],
+                                'geom_name': parts[4],
+                                'x': float(parts[5]),
+                                'y': float(parts[6]),
+                                'layer': int(parts[7]),
+                                'rotation': float(parts[8]),
+                                'properties': {}  # Will be filled by C_PROP
+                            }
+                            self.components.append(comp)
+                        except (ValueError, IndexError) as e:
+                            print(f"Error parsing COMP line: {e}")
+                elif line.startswith('C_PROP ') and self.components:
+                    # Parse C_PROP and add to last component
+                    props = self._parse_c_prop(line)
+                    self.components[-1]['properties'].update(props)
+        
+        print(f"Parsed: Board Outline={len(self.board_outline)} pts, Geometries={len(self.geometries)}, Components={len(self.components)}")
+        return {
+            'board_outline': self.board_outline,
+            'geometries': self.geometries,
+            'components': self.components
+        }
+    
+    def _extract_coords(self, line):
+        import re
+        coords = []
+        # Find position after last quote (coordinates start after 'Layer1' or '' )
+        last_quote = line.rfind("'")
+        if last_quote != -1:
+            coord_part = line[last_quote+1:]
+        else:
+            coord_part = line
+        
+        # Extract all floating point numbers
+        numbers = re.findall(r'[-+]?\d+\.?\d*', coord_part)
+        
+        # Pair them as X, Y coordinates
+        for j in range(0, len(numbers) - 1, 2):
+            try:
+                x = float(numbers[j])
+                y = float(numbers[j+1])
+                coords.append((x, y))
+            except ValueError:
+                pass
+        return coords
+    
+    def _parse_c_prop(self, line):
+        """Parse C_PROP line to extract name/value pairs from (NAME,"VALUE") format"""
+        import re
+        props = {}
+        # Remove 'C_PROP ' prefix
+        content = line[7:] if line.startswith('C_PROP ') else line
+        
+        # Pattern to match (NAME,"VALUE") or (NAME,VALUE)
+        pattern = r'\(([^,]+),\"?([^\")]+)\"?\)'
+        matches = re.findall(pattern, content)
+        
+        for name, value in matches:
+            props[name.strip()] = value.strip()
+        
+        return props
+
+class ZoomableGraphicsView(QGraphicsView):
+    """QGraphicsView with mouse wheel zoom support"""
+    def __init__(self, scene, parent=None):
+        super().__init__(scene, parent)
+        self.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
+        self.setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
+        
+    def wheelEvent(self, event):
+        # Zoom Factor
+        zoom_in_factor = 1.25
+        zoom_out_factor = 1 / zoom_in_factor
+        
+        if event.angleDelta().y() > 0:
+            zoom_factor = zoom_in_factor
+        else:
+            zoom_factor = zoom_out_factor
+            
+        self.scale(zoom_factor, zoom_factor)
+
+class CADViewerWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(2)
+        
+        # Toolbar for rotation buttons
+        self.toolbar = QHBoxLayout()
+        self.toolbar.setContentsMargins(5, 5, 5, 5)
+        self.main_layout.addLayout(self.toolbar)
+        
+        self.toolbar.addStretch()
+        self.btn_0 = QPushButton("0°")
+        self.btn_90 = QPushButton("90°")
+        self.btn_180 = QPushButton("180°")
+        self.btn_270 = QPushButton("270°")
+        
+        for btn, angle in [(self.btn_0, 0), (self.btn_90, 90), (self.btn_180, 180), (self.btn_270, 270)]:
+            btn.setFixedWidth(50)
+            btn.clicked.connect(lambda checked, a=angle: self.rotate_view(a))
+            self.toolbar.addWidget(btn)
+        
+        # Separator
+        self.toolbar.addSpacing(20)
+        
+        # Zoom Fit Button
+        self.btn_fit = QPushButton("Zoom Fit")
+        self.btn_fit.setFixedWidth(100)
+        self.btn_fit.clicked.connect(self.zoom_fit)
+        self.toolbar.addWidget(self.btn_fit)
+        
+        # Separator
+        self.toolbar.addSpacing(10)
+        
+        # Search Component
+        self.lbl_search = QLabel("Find:")
+        self.toolbar.addWidget(self.lbl_search)
+        self.input_search = QLineEdit()
+        self.input_search.setPlaceholderText("Ref...")
+        self.input_search.setFixedWidth(80)
+        self.input_search.returnPressed.connect(self.find_component)
+        self.toolbar.addWidget(self.input_search)
+        self.btn_search = QPushButton("Search")
+        self.btn_search.clicked.connect(self.find_component)
+        self.toolbar.addWidget(self.btn_search)
+        
+        self.toolbar.addStretch()
+        
+        # Horizontal Splitter: CAD View (left) + Property Table (right)
+        self.content_splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.main_layout.addWidget(self.content_splitter)
+        
+        # Left: Tab Widget for Top/Bottom
+        self.tabs = QTabWidget()
+        self.content_splitter.addWidget(self.tabs)
+        
+        # Top Layer
+        self.scene_top = QGraphicsScene()
+        self.view_top = ZoomableGraphicsView(self.scene_top)
+        self.view_top.setMouseTracking(True)
+        self.tabs.addTab(self.view_top, "Top")
+        
+        # Bottom Layer
+        self.scene_bottom = QGraphicsScene()
+        self.view_bottom = ZoomableGraphicsView(self.scene_bottom)
+        self.view_bottom.setMouseTracking(True)
+        self.tabs.addTab(self.view_bottom, "Bottom")
+        
+        # Right: Property Table
+        self.prop_table = QTableWidget()
+        self.prop_table.setColumnCount(2)
+        self.prop_table.setHorizontalHeaderLabels(["Property", "Value"])
+        self.prop_table.horizontalHeader().setStretchLastSection(True)
+        self.prop_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.prop_table.setMinimumWidth(200)
+        self.content_splitter.addWidget(self.prop_table)
+        
+        # Set splitter sizes (80% CAD, 20% property)
+        self.content_splitter.setSizes([800, 200])
+        
+        # Store component bounds for search
+        self.component_bounds = {}  # ref -> (layer, QRectF)
+        self.component_items = {}   # ref -> QGraphicsPathItem (for highlighting)
+        self.component_data = {}    # ref -> component dict (with properties)
+        self.highlighted_ref = None  # Currently highlighted component ref
+        self.parser = NeutralFileParser()
+        self.current_rotation = 0
+        
+        # Connect mouse click events on views
+        self.view_top.viewport().installEventFilter(self)
+        self.view_bottom.viewport().installEventFilter(self)
+    
+    def eventFilter(self, obj, event):
+        """Handle mouse click on graphics views to select components"""
+        from PyQt6.QtCore import QEvent
+        if event.type() == QEvent.Type.MouseButtonPress:
+            if obj == self.view_top.viewport():
+                self._handle_view_click(self.view_top, self.scene_top, 1, event.pos())
+            elif obj == self.view_bottom.viewport():
+                self._handle_view_click(self.view_bottom, self.scene_bottom, 2, event.pos())
+        return super().eventFilter(obj, event)
+    
+    def _handle_view_click(self, view, scene, layer, pos):
+        """Find clicked component and show its properties"""
+        scene_pos = view.mapToScene(pos)
+        
+        # Find which component was clicked
+        for ref, (comp_layer, bounds) in self.component_bounds.items():
+            if comp_layer == layer and bounds.contains(scene_pos):
+                self._show_component_properties(ref)
+                return
+    
+    def _show_component_properties(self, ref):
+        """Display component properties in the property table"""
+        self.prop_table.setRowCount(0)
+        
+        if ref not in self.component_data:
+            return
+            
+        comp = self.component_data[ref]
+        
+        # Add basic component info
+        basic_props = [
+            ("Reference", comp.get('ref', '')),
+            ("Part Number", comp.get('part_no', '')),
+            ("Name", comp.get('name', '')),
+            ("Geometry", comp.get('geom_name', '')),
+            ("X", str(comp.get('x', ''))),
+            ("Y", str(comp.get('y', ''))),
+            ("Layer", "Top" if comp.get('layer') == 1 else "Bottom"),
+            ("Rotation", str(comp.get('rotation', '')))
+        ]
+        
+        # Add C_PROP properties
+        properties = comp.get('properties', {})
+        
+        all_props = basic_props + list(properties.items())
+        
+        self.prop_table.setRowCount(len(all_props))
+        for i, (name, value) in enumerate(all_props):
+            self.prop_table.setItem(i, 0, QTableWidgetItem(str(name)))
+            self.prop_table.setItem(i, 1, QTableWidgetItem(str(value)))
+        
+        self.prop_table.resizeColumnsToContents()
+        
+    def rotate_view(self, angle):
+        # Calculate delta rotation
+        delta = angle - self.current_rotation
+        self.current_rotation = angle
+        
+        self.view_top.rotate(delta)
+        self.view_bottom.rotate(delta)
+    
+    def zoom_fit(self):
+        """Fit the current view to show entire scene"""
+        current_view = self.view_top if self.tabs.currentIndex() == 0 else self.view_bottom
+        current_scene = self.scene_top if self.tabs.currentIndex() == 0 else self.scene_bottom
+        current_view.fitInView(current_scene.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
+        
+    def find_component(self):
+        ref = self.input_search.text().strip().upper()
+        if not ref:
+            return
+        
+        # Reset previous highlight
+        if self.highlighted_ref and self.highlighted_ref in self.component_items:
+            prev_item = self.component_items[self.highlighted_ref]
+            prev_item.setBrush(QBrush(QColor(255, 255, 255)))  # White
+        
+        # Search in component_bounds (case-insensitive)
+        found = None
+        found_ref = None
+        for comp_ref, (layer, bounds) in self.component_bounds.items():
+            if comp_ref.upper() == ref:
+                found = (layer, bounds)
+                found_ref = comp_ref
+                break
+        
+        if found:
+            layer, bounds = found
+            
+            # Highlight the found component
+            if found_ref in self.component_items:
+                item = self.component_items[found_ref]
+                item.setBrush(QBrush(QColor(220, 220, 220)))  # Light gray
+                self.highlighted_ref = found_ref
+            
+            # Show properties in property grid
+            self._show_component_properties(found_ref)
+            
+            # Switch to correct tab
+            if layer == 1:
+                self.tabs.setCurrentIndex(0)
+                view = self.view_top
+            else:
+                self.tabs.setCurrentIndex(1)
+                view = self.view_bottom
+            
+            # Create expanded rect (4x size centered on component)
+            center = bounds.center()
+            expanded_width = bounds.width() * 4
+            expanded_height = bounds.height() * 4
+            expanded_rect = QRectF(
+                center.x() - expanded_width/2,
+                center.y() - expanded_height/2,
+                expanded_width,
+                expanded_height
+            )
+            
+            # Zoom to the expanded rect
+            view.fitInView(expanded_rect, Qt.AspectRatioMode.KeepAspectRatio)
+        else:
+            self.highlighted_ref = None
+            self.prop_table.setRowCount(0)  # Clear properties
+            print(f"Component '{ref}' not found")
+        
+    def load_neutral_file(self, file_path):
+        if not os.path.exists(file_path):
+            print(f"File not found: {file_path}")
+            return
+            
+        # Reset
+        self.current_rotation = 0
+        self.view_top.resetTransform()
+        self.view_bottom.resetTransform()
+        self.component_bounds.clear()
+        self.component_items.clear()
+        self.component_data.clear()
+        self.highlighted_ref = None
+        self.prop_table.setRowCount(0)
+            
+        data = self.parser.parse(file_path)
+        if data:
+            self._draw_cad(data)
+            
+    def _draw_cad(self, data):
+        self.scene_top.clear()
+        self.scene_bottom.clear()
+        
+        board_outline = data['board_outline']
+        geometries = data['geometries']
+        components = data['components']
+        
+        # Store component data for property display
+        for comp in components:
+            self.component_data[comp['ref']] = comp
+        
+        # Draw board outline on both scenes
+        for scene in [self.scene_top, self.scene_bottom]:
+            self._draw_board_outline(scene, board_outline)
+        
+        # Draw components by layer (1=Top, 2=Bottom)
+        top_comps = [c for c in components if c['layer'] == 1]
+        bottom_comps = [c for c in components if c['layer'] == 2]
+        
+        self._draw_components(self.scene_top, top_comps, geometries)
+        self._draw_components(self.scene_bottom, bottom_comps, geometries)
+        
+        # Fit views
+        self.view_top.fitInView(self.scene_top.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
+        self.view_bottom.fitInView(self.scene_bottom.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
+        
+    def _draw_board_outline(self, scene, points):
+        if not points:
+            return
+        pen = QPen(QColor(0, 0, 255))
+        pen.setWidth(2)
+        for i in range(len(points)):
+            x1, y1 = points[i]
+            x2, y2 = points[(i + 1) % len(points)]
+            scene.addLine(x1, -y1, x2, -y2, pen)
+            
+    def _draw_components(self, scene, components, geometries):
+        pen = QPen(QColor(0, 128, 0))
+        pen.setWidthF(1.0)  # Width in pixels
+        pen.setCosmetic(True)  # Cosmetic pen - width stays constant regardless of zoom
+        brush = QBrush(QColor(255, 255, 255))  # White fill
+        
+        for comp in components:
+            geom_name = comp['geom_name']
+            geom_points = geometries.get(geom_name, [])
+            comp_x = comp['x']
+            comp_y = -comp['y']  # Flip Y
+            comp_layer = comp['layer']
+            comp_ref = comp['ref']
+            
+            # Calculate component bounding box for text scaling
+            comp_width = 2.0
+            comp_height = 2.0
+            comp_bounds = QRectF(comp_x - 1, comp_y - 1, 2, 2)  # Default bounds
+            path_item = None
+            
+            if geom_points:
+                path = QPainterPath()
+                if len(geom_points) > 0:
+                    path.moveTo(geom_points[0][0], -geom_points[0][1])
+                    for pt in geom_points[1:]:
+                        path.lineTo(pt[0], -pt[1])
+                    path.closeSubpath()
+                
+                # Get bounding rect of geometry for text scaling
+                geom_rect = path.boundingRect()
+                comp_width = geom_rect.width()
+                comp_height = geom_rect.height()
+                
+                transform = QTransform()
+                transform.translate(comp_x, comp_y)
+                transform.rotate(-comp['rotation'])
+                
+                transformed_path = transform.map(path)
+                path_item = scene.addPath(transformed_path, pen, brush)
+                
+                # Store transformed bounds for search
+                comp_bounds = transformed_path.boundingRect()
+            else:
+                rect_size = 2
+                path_item = scene.addRect(comp_x - rect_size/2, comp_y - rect_size/2, 
+                              rect_size, rect_size, pen, brush)
+                comp_width = rect_size
+                comp_height = rect_size
+                comp_bounds = QRectF(comp_x - rect_size/2, comp_y - rect_size/2, rect_size, rect_size)
+            
+            # Store bounds and items for component search/highlight
+            self.component_bounds[comp_ref] = (comp_layer, comp_bounds)
+            if path_item:
+                self.component_items[comp_ref] = path_item
+            
+            # Add Reference Text - use monospace font for better visibility
+            # Use QGraphicsSimpleTextItem for better scaling control (no margins)
+            font = QFont("Consolas")
+            font.setPointSizeF(100)  # Use large base size for better resolution when scaled down
+            font.setBold(True)      # Make it bold
+            
+            text_item = scene.addSimpleText(comp['ref'], font)
+            text_item.setBrush(QBrush(QColor(0, 0, 0)))
+            text_item.setPen(QPen(Qt.PenStyle.NoPen))  # No outline for text
+            
+            # Check for vertical rotation
+            is_vertical = False
+            rot = comp['rotation']
+            # Normalize rotation check
+            if abs(rot - 90) < 1.0 or abs(rot - 270) < 1.0:
+                is_vertical = True
+            
+            # Get text bounding rect
+            text_rect = text_item.boundingRect()
+            
+            # Calculate scale to fit text within component bounds (90% of size)
+            target_width = comp_width * 0.9
+            target_height = comp_height * 0.9
+            
+            # If vertical, we need to swap target width/height because we will rotate text
+            if is_vertical:
+                # Text Height (visual width) should check against Comp Width
+                # Text Width (visual height) should check against Comp Height
+                # Since we want to fit text inside the box:
+                # Local Text Width fits into Local Comp Height (Visual Height)
+                # Local Text Height fits into Local Comp Width (Visual Width)
+                # target_width is usually X-axis. 
+                # If we rotate text 90, its X-axis aligns with Comp Y-axis.
+                # So we swap targets for scaling calculation.
+                scale_x = target_height / text_rect.width()
+                scale_y = target_width / text_rect.height()
+            else:
+                scale_x = target_width / text_rect.width()
+                scale_y = target_height / text_rect.height()
+                
+            if text_rect.width() > 0 and text_rect.height() > 0:
+                # Use smaller scale to maintain aspect ratio
+                scale = min(scale_x, scale_y)
+                text_item.setScale(scale)
+            
+            # Reset position to 0,0 for mapping calculation
+            text_item.setPos(0, 0)
+            
+            # Apply Rotation if vertical
+            if is_vertical:
+                center = text_rect.center()
+                text_item.setTransformOriginPoint(center)
+                text_item.setRotation(-90)
+                
+            # Robust Centering Logic:
+            # 1. Get where the center of the text is currently mapped to in the scene (with Pos=0,0)
+            rect_center = text_rect.center()
+            current_scene_center = text_item.mapToScene(rect_center)
+            
+            # 2. Calculate the difference between where it is and where we want it (comp_x, comp_y)
+            target_pos = QPointF(comp_x, comp_y)
+            offset = target_pos - current_scene_center
+            
+            # 3. Apply that offset to the item's position
+            text_item.setPos(offset)
+    
+    def mark_only_cad_components(self, only_cad_refs):
+        """Mark components that are Only CAD (not in BOM) with a red X"""
+        if not only_cad_refs:
+            return
+            
+        pen = QPen(QColor(255, 0, 0))  # Red
+        pen.setWidthF(2.0)
+        pen.setCosmetic(True)  # Width stays constant regardless of zoom
+        
+        for ref in only_cad_refs:
+            ref = ref.strip()
+            if ref in self.component_bounds:
+                layer, bounds = self.component_bounds[ref]
+                
+                # Select the appropriate scene
+                if layer == 1:
+                    scene = self.scene_top
+                else:
+                    scene = self.scene_bottom
+                
+                # Draw X from corner to corner of bounding box
+                x1, y1 = bounds.left(), bounds.top()
+                x2, y2 = bounds.right(), bounds.bottom()
+                
+                # Diagonal line 1: top-left to bottom-right
+                scene.addLine(x1, y1, x2, y2, pen)
+                # Diagonal line 2: top-right to bottom-left
+                scene.addLine(x2, y1, x1, y2, pen)
+
+
 # Import logic from existing scripts
 import calculate_schedule
 
+
+class HandToolOverlay(QWidget):
+    def __init__(self, parent=None, web_view=None):
+        super().__init__(parent)
+        self.web_view = web_view
+        self.last_pos = None
+        self.setCursor(Qt.CursorShape.OpenHandCursor)
+        # Transparent background? No, let's use semi-transparent for debugging
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setStyleSheet("background-color: rgba(0, 255, 0, 50);") # Debug Green
+        self.hide() 
+        
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.last_pos = event.pos()
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
+            print("Overlay: Mouse Press")
+            event.accept()
+
+    def mouseMoveEvent(self, event):
+        if self.last_pos:
+            delta = event.pos() - self.last_pos
+            self.last_pos = event.pos()
+            print(f"Overlay: Drag delta={delta}, Sending Native Wheel")
+            if self.web_view:
+                # Create native Qt wheel event
+                # angleDelta is in 1/8 degree units; multiply by 8 for responsiveness
+                angle_delta = QPoint(delta.x() * 8, delta.y() * 8)
+                pixel_delta = QPoint(delta.x(), delta.y())
+                
+                # Get center of view for event position
+                center = self.web_view.rect().center()
+                
+                wheel_event = QWheelEvent(
+                    QPointF(center),
+                    QPointF(self.web_view.mapToGlobal(center)),
+                    pixel_delta,
+                    angle_delta,
+                    Qt.MouseButton.NoButton,
+                    Qt.KeyboardModifier.NoModifier,
+                    Qt.ScrollPhase.NoScrollPhase,
+                    False
+                )
+                
+                # Send to focusProxy (the actual render widget) or the view
+                target = self.web_view.focusProxy() or self.web_view
+                QApplication.sendEvent(target, wheel_event)
+            event.accept()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.last_pos = None
+            self.setCursor(Qt.CursorShape.OpenHandCursor)
+            event.accept()
+
+class PDFWebView(QWebEngineView):
+    pass
+
+class PDFViewerWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0,0,0,0)
+        self.layout.setSpacing(2)
+        
+        # Toolbar
+        self.toolbar_layout = QHBoxLayout()
+        self.toolbar_layout.setContentsMargins(5, 5, 5, 5)
+        self.layout.addLayout(self.toolbar_layout)
+        
+        # Hand Tool Toggle
+        self.btn_hand = QPushButton("Hand Tool")
+        self.btn_hand.setCheckable(True)
+        self.btn_hand.toggled.connect(self.toggle_hand_mode)
+        self.toolbar_layout.addWidget(self.btn_hand)
+        
+        self.toolbar_layout.addStretch()
+        
+        # Find Bar
+        self.lbl_find = QLabel("Find:")
+        self.toolbar_layout.addWidget(self.lbl_find)
+        
+        self.input_find = QLineEdit()
+        self.input_find.setPlaceholderText("Text...")
+        self.input_find.setFixedWidth(150)
+        self.input_find.returnPressed.connect(self.find_next)
+        self.toolbar_layout.addWidget(self.input_find)
+        
+        self.btn_prev = QPushButton("Prev")
+        self.btn_prev.clicked.connect(self.find_prev)
+        self.toolbar_layout.addWidget(self.btn_prev)
+        
+        self.btn_next = QPushButton("Next")
+        self.btn_next.clicked.connect(self.find_next)
+        self.toolbar_layout.addWidget(self.btn_next)
+        
+        # Content Container with Stacked Layout (Overlay on top of View)
+        self.content_container = QWidget()
+        self.stack = QStackedLayout(self.content_container)
+        self.stack.setStackingMode(QStackedLayout.StackingMode.StackAll)
+        
+        # WebView
+        self.view = PDFWebView()
+        self.stack.addWidget(self.view)
+        
+        # Overlay
+        self.overlay = HandToolOverlay(self.content_container, self.view)
+        self.stack.addWidget(self.overlay)
+        
+        self.layout.addWidget(self.content_container)
+        
+    def toggle_hand_mode(self, checked):
+        if checked:
+            self.overlay.show()
+            self.overlay.raise_()
+        else:
+            self.overlay.hide()
+        
+    def find_next(self):
+        text = self.input_find.text()
+        if text:
+            # Pass callback to handle zoom
+            self.view.findText(text, resultCallback=self.on_find_result)
+            
+    def find_prev(self):
+        text = self.input_find.text()
+        if text:
+            self.view.findText(text, QWebEnginePage.FindFlag.FindBackward, resultCallback=self.on_find_result)
+
+    def on_find_result(self, found):
+        if found:
+            # Zoom logic
+            current = self.view.zoomFactor()
+            if current < 2.0:
+                self.view.setZoomFactor(2.0)
+        else:
+            # Optional: Feedback for not found
+            print("Text not found")
+            
+    def setUrl(self, url):
+        self.view.setUrl(url)
+        
+    def settings(self):
+        return self.view.settings()
 
 class SMDVerificationTab(QWidget):
     def __init__(self):
@@ -169,20 +897,37 @@ class SMDVerificationTab(QWidget):
         # Right Top: Table Widget (Details)
         self.table = QTableWidget()
         cols = ["Check", "PCB Code", "Rev", "SMD Code", "Model Name", "PCB Size", 
-                "Neutral File", "Gerber File", "BOM File", "BOM Count", "Path"]
+                "Neutral File", "Gerber File", "BOM File", "BOM Count", "WorkSpec", "Path"]
         self.table.setColumnCount(len(cols))
         self.table.setHorizontalHeaderLabels(cols)
         self.table.setAlternatingRowColors(True)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        # Set selection color to light gray
+        self.table.setStyleSheet("QTableWidget::item:selected { background-color: rgb(220, 220, 220); color: black; }")
         self.right_splitter.addWidget(self.table)
         
-        # Right Bottom: Report View
+        # Right Bottom: Stacked Widget (Report vs PDF)
+        self.bottom_stack = QStackedWidget()
         self.report_tabs = QTabWidget()
-        self.right_splitter.addWidget(self.report_tabs)
+        self.web_view = PDFViewerWidget()
+        # Enable Settings for PDF (via proxy)
+        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
+        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
         
-        # Set Right Splitter Stretch (50:50)
-        self.right_splitter.setStretchFactor(0, 1)
-        self.right_splitter.setStretchFactor(1, 1)
+        self.bottom_stack.addWidget(self.report_tabs)
+        self.bottom_stack.addWidget(self.web_view)
+        
+        # CAD Viewer for Neutral File
+        self.cad_viewer = CADViewerWidget()
+        self.bottom_stack.addWidget(self.cad_viewer)
+        
+        self.right_splitter.addWidget(self.bottom_stack)
+        
+        # Set Right Splitter Stretch (30:70)
+        self.right_splitter.setStretchFactor(0, 3)
+        self.right_splitter.setStretchFactor(1, 7)
+        # Enforce initial size ratio
+        self.right_splitter.setSizes([300, 700])
         
         self.splitter.addWidget(self.right_splitter)
         
@@ -198,11 +943,85 @@ class SMDVerificationTab(QWidget):
         self.tree.header().setSectionsClickable(True)
         self.tree.header().sectionClicked.connect(self.reset_filter)
         
-        # Connect Table Click for Report
-        self.table.itemClicked.connect(self.load_cad_bom_report)
+        # Connect Table Click for Report/PDF
+        self.table.itemClicked.connect(self.on_table_click)
 
-    def load_cad_bom_report(self, item):
+
+    def on_table_click(self, item):
         row = item.row()
+        col = item.column()
+        
+        # 0. Check Neutral File Click (Col 6)
+        if col == 6:
+            val = item.text()
+            path_item = self.table.item(row, 11)  # Path column
+            if val and path_item:
+                folder_path = path_item.text()
+                neutral_file_path = os.path.join(folder_path, val)
+                if os.path.exists(neutral_file_path):
+                    self.cad_viewer.load_neutral_file(neutral_file_path)
+                    
+                    # Also load CAD-BOM report to mark Only CAD components
+                    pcb_item = self.table.item(row, 1)
+                    smd_item = self.table.item(row, 3)
+                    if pcb_item and smd_item:
+                        pcb_code = pcb_item.text().strip()
+                        smd_code = smd_item.text().strip()
+                        only_cad_refs = self._get_only_cad_refs(smd_code, pcb_code)
+                        if only_cad_refs:
+                            self.cad_viewer.mark_only_cad_components(only_cad_refs)
+                    
+                    self.bottom_stack.setCurrentWidget(self.cad_viewer)
+                    return
+                else:
+                    print(f"Neutral file not found: {neutral_file_path}")
+        
+        # 1. Check WorkSpec Click (Col 10)
+        if col == 10:
+            val = item.text()
+            path_item = self.table.item(row, 11)
+            if val and path_item:
+                folder_path = path_item.text()
+                # Split by newline (previously comma) and filter empties
+                pdf_list = [x.strip() for x in val.replace(',', '\n').split('\n') if x.strip()]
+                
+                selected_pdf = None
+                if len(pdf_list) == 1:
+                    selected_pdf = pdf_list[0]
+                elif len(pdf_list) > 1:
+                    # Show Context Menu for Selection
+                    menu = QMenu(self)
+                    # Add Title or something? No, just list.
+                    for p in pdf_list:
+                        action = menu.addAction(p)
+                        action.setData(p)
+                    
+                    # Execute Menu at Mouse Position
+                    action = menu.exec(QCursor.pos())
+                    if action:
+                        selected_pdf = action.data()
+                
+                if selected_pdf:
+                    try:
+                        folder_path = os.path.abspath(folder_path)
+                        pdf_path = os.path.join(folder_path, "WorkSpec", selected_pdf)
+                        pdf_path = os.path.normpath(pdf_path)
+                        
+                        if os.path.exists(pdf_path):
+                            print(f"Loading PDF: {pdf_path}")
+                            self.web_view.setUrl(QUrl.fromLocalFile(pdf_path))
+                            self.bottom_stack.setCurrentWidget(self.web_view)
+                            return
+                        else:
+                            QMessageBox.warning(self, "Error", f"PDF File not found:\n{pdf_path}")
+                    except Exception as e:
+                        QMessageBox.critical(self, "Error", f"Failed to load PDF: {e}")
+                        print(f"PDF Load Error: {e}")
+                        return
+        
+        # 2. Default: Load Report
+        self.bottom_stack.setCurrentWidget(self.report_tabs)
+        
         # Cols: 1=PCB, 3=SMD
         pcb_item = self.table.item(row, 1)
         smd_item = self.table.item(row, 3)
@@ -229,8 +1048,26 @@ class SMDVerificationTab(QWidget):
         
         if found_file:
             try:
-                xls = pd.read_excel(found_file, sheet_name=None)
-                for sheet_name, df in xls.items():
+                xls = pd.read_excel(found_file, sheet_name=None, header=None)
+                for i, (sheet_name, df) in enumerate(xls.items()):
+                    # Dynamic Header Parsing Logic (Targeting primarily the first sheet)
+                    if i == 0: 
+                        header_row_idx = -1
+                        # Search first 20 rows
+                        for r in range(min(20, len(df))):
+                            row_vals = [str(x).strip() for x in df.iloc[r].values]
+                            # Check for key columns
+                            if "No" in row_vals and "Item" in row_vals and "Result" in row_vals:
+                                header_row_idx = r
+                                break
+                        
+                        if header_row_idx != -1:
+                            # Set header
+                            new_header = df.iloc[header_row_idx]
+                            df = df[header_row_idx+1:].copy()
+                            df.columns = new_header
+                            df.reset_index(drop=True, inplace=True)
+                    
                     tab = QWidget()
                     lay = QVBoxLayout(tab)
                     lay.setContentsMargins(2,2,2,2)
@@ -239,7 +1076,6 @@ class SMDVerificationTab(QWidget):
                     model = PandasModel(df)
                     tv.setModel(model)
                     tv.setAlternatingRowColors(True)
-                    # Using Interactive mode for better performance on large sheets, but resize to contents initially
                     tv.horizontalHeader().setStretchLastSection(True)
                     tv.resizeColumnsToContents()
                     
@@ -250,7 +1086,84 @@ class SMDVerificationTab(QWidget):
                 self.report_tabs.addTab(lbl, "Error")
         else:
             # Optional: Feedback if needed
-            pass
+            self.report_tabs.addTab(QLabel(f"Report not found for {target_prefix}"), "Info")
+    
+    def _get_only_cad_refs(self, smd_code, pcb_code):
+        """Extract 'Only CAD' component references from CAD-BOM report"""
+        only_cad_refs = []
+        
+        report_dir = r"L:\CADBomReport"
+        target_prefix = f"{smd_code}_{pcb_code}"
+        found_file = None
+        
+        print(f"Looking for CAD-BOM report with prefix: {target_prefix}")
+        
+        if os.path.exists(report_dir):
+            try:
+                for f in os.listdir(report_dir):
+                    if f.startswith(target_prefix) and f.lower().endswith(('.xlsx', '.xls')):
+                        found_file = os.path.join(report_dir, f)
+                        print(f"Found CAD-BOM report: {found_file}")
+                        break
+            except Exception as e:
+                print(f"Directory scan error: {e}")
+                return only_cad_refs
+        
+        if not found_file:
+            print(f"No CAD-BOM report found for {target_prefix}")
+            return only_cad_refs
+            
+        try:
+            # Read first sheet with header detection
+            xls = pd.read_excel(found_file, sheet_name=0, header=None)
+            df = xls
+            
+            # Find header row
+            header_row_idx = -1
+            for r in range(min(20, len(df))):
+                row_vals = [str(x).strip() for x in df.iloc[r].values]
+                if "No" in row_vals and "Item" in row_vals:
+                    header_row_idx = r
+                    print(f"Found header row at index {r}: {row_vals}")
+                    break
+            
+            if header_row_idx != -1:
+                new_header = df.iloc[header_row_idx]
+                df = df[header_row_idx+1:].copy()
+                df.columns = new_header
+                df.reset_index(drop=True, inplace=True)
+                
+                # Find columns by name (case-insensitive)
+                item_col = None
+                location_col = None
+                for i, col_name in enumerate(df.columns):
+                    col_str = str(col_name).strip().lower()
+                    if col_str == 'item':
+                        item_col = i
+                    elif col_str == 'location':
+                        location_col = i
+                
+                print(f"Item column: {item_col}, Location column: {location_col}")
+                
+                if item_col is not None and location_col is not None:
+                    # Extract "Only CAD" rows (case-insensitive)
+                    for idx, row in df.iterrows():
+                        item_val = str(row.iloc[item_col]).strip().lower()
+                        if 'only cad' in item_val:
+                            location_val = str(row.iloc[location_col]).strip()
+                            if location_val and location_val.lower() != 'nan':
+                                # Location is typically a single reference like C1, C2
+                                only_cad_refs.append(location_val)
+                                print(f"Found Only CAD: {location_val}")
+            
+            print(f"Total Only CAD components found: {len(only_cad_refs)} - {only_cad_refs}")
+        except Exception as e:
+            print(f"Error reading CAD-BOM report: {e}")
+            import traceback
+            traceback.print_exc()
+        
+        return only_cad_refs
+
 
     def load_folder(self):
         default_dir = r"Y:\CadDesign\Manufacture\NW\Design_25"
@@ -298,7 +1211,20 @@ class SMDVerificationTab(QWidget):
                 matr_list = []
                 
             bom_files = [m.get('matrFileNm', '') for m in matr_list if isinstance(m, dict)]
+            bom_files = [m.get('matrFileNm', '') for m in matr_list if isinstance(m, dict)]
             bom_str = "\n".join(bom_files)
+            
+            # Check WorkSpec PDF
+            work_spec_files = []
+            try:
+                json_dir = os.path.dirname(file_path)
+                ws_dir = os.path.join(json_dir, "WorkSpec")
+                if os.path.exists(ws_dir):
+                    for f in os.listdir(ws_dir):
+                        if f.lower().endswith('.pdf'):
+                            work_spec_files.append(f)
+            except:
+                pass
             
             return {
                 'pcbCode': basic.get('pcbCode', ''),
@@ -309,7 +1235,8 @@ class SMDVerificationTab(QWidget):
                 'neutralFileNm': cad.get('neutralFileNm', ''),
                 'gerberFileNm': cad.get('gerberFileNm', ''),
                 'bomFiles': bom_str,
-                'matrCount': len(matr_list)
+                'matrCount': len(matr_list),
+                'workSpecs': "\n".join(work_spec_files)
             }
         except Exception as e:
             print(f"Error parsing {file_path}: {e}")
@@ -354,8 +1281,8 @@ class SMDVerificationTab(QWidget):
         for row in range(self.table.rowCount()):
             item = self.table.item(row, 0)
             if item and item.checkState() == Qt.CheckState.Checked:
-                # Get Path from column 10
-                path_item = self.table.item(row, 10)
+                # Get Path from column 11
+                path_item = self.table.item(row, 11)
                 if path_item:
                     checked_rows.append(path_item.text())
         
@@ -416,7 +1343,8 @@ class SMDVerificationTab(QWidget):
             self.table.setItem(i, 7, QTableWidgetItem(data['gerberFileNm']))
             self.table.setItem(i, 8, QTableWidgetItem(data['bomFiles']))
             self.table.setItem(i, 9, QTableWidgetItem(str(data['matrCount'])))
-            self.table.setItem(i, 10, QTableWidgetItem(data['FolderPath']))
+            self.table.setItem(i, 10, QTableWidgetItem(data.get('workSpecs', '')))
+            self.table.setItem(i, 11, QTableWidgetItem(data['FolderPath']))
 
             # Tree Population
             key = data['smdCode'] 
